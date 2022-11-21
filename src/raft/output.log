@@ -1,0 +1,317 @@
+000010 CLNT S0 Started at T:0 VF:-1 Log:[{0 0 <nil>}]
+000014 CLNT S0 Started at T:0 LLI:0
+000022 CLNT S1 Started at T:0 VF:-1 Log:[{0 0 <nil>}]
+000023 CLNT S1 Started at T:0 LLI:0
+000030 CLNT S2 Started at T:0 VF:-1 Log:[{0 0 <nil>}]
+000030 CLNT S2 Started at T:0 LLI:0
+Test (2A): initial election ...
+002182 TIMR S2 Not Leader, checking election timeout
+002188 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002189 VOTE S2 start election with RequestVoteArgs {1 2 0 0}
+002209 TERM S0 Term is higher, updating {1 > 0}, request vote
+002209 VOTE S0 Grant Vote for S2 in T:1
+002211 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002212 TERM S1 Term is higher, updating {1 > 0}, request vote
+002212 VOTE S1 Grant Vote for S2 in T:1
+002214 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002216 LEAD S2 Achieved Majority for T:1, converting to Leader
+002224 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002224 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+002225 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+002229 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002234 INFO S1 Match Log Success PLT:0 PLI:0
+002234 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+002236 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002239 LEAD S2 -> S1 Append Entries Success
+002240 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002243 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+002243 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+002255 INFO S0 Match Log Success PLT:0 PLI:0
+002255 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+002257 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+002260 LEAD S2 -> S0 Append Entries Success
+002261 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+003723 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+003726 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+003727 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+003727 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+003729 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+003740 INFO S1 Match Log Success PLT:0 PLI:0
+003740 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+003742 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+003746 LEAD S2 -> S1 Append Entries Success
+003747 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+003752 INFO S0 Match Log Success PLT:0 PLI:0
+003752 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+003753 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+003758 LEAD S2 -> S0 Append Entries Success
+003759 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+005227 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+005231 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+005231 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+005232 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+005232 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+005246 INFO S0 Match Log Success PLT:0 PLI:0
+005247 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+005249 INFO S1 Match Log Success PLT:0 PLI:0
+005249 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+005249 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+005251 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+005254 LEAD S2 -> S0 Append Entries Success
+005256 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+005256 LEAD S2 -> S1 Append Entries Success
+005258 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+006732 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+006735 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+006736 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+006738 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+006739 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+006748 INFO S1 Match Log Success PLT:0 PLI:0
+006748 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+006750 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+006753 LEAD S2 -> S1 Append Entries Success
+006755 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+006761 INFO S0 Match Log Success PLT:0 PLI:0
+006761 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+006763 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+006766 LEAD S2 -> S0 Append Entries Success
+006767 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+008237 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+008240 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+008240 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+008248 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+008248 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+008256 INFO S1 Match Log Success PLT:0 PLI:0
+008256 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+008257 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+008261 LEAD S2 -> S1 Append Entries Success
+008263 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+008264 INFO S0 Match Log Success PLT:0 PLI:0
+008265 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+008266 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+008270 LEAD S2 -> S0 Append Entries Success
+008271 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+009741 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+009745 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+009745 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+009745 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+009747 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+009758 INFO S0 Match Log Success PLT:0 PLI:0
+009759 INFO S1 Match Log Success PLT:0 PLI:0
+009760 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+009759 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+009762 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+009763 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+009767 LEAD S2 -> S1 Append Entries Success
+009769 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+009770 LEAD S2 -> S0 Append Entries Success
+009772 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+011246 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+011249 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+011250 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+011249 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+011251 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+011263 INFO S0 Match Log Success PLT:0 PLI:0
+011264 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+011265 INFO S1 Match Log Success PLT:0 PLI:0
+011265 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+011265 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+011268 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+011270 LEAD S2 -> S0 Append Entries Success
+011271 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+011274 LEAD S2 -> S1 Append Entries Success
+011276 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+012751 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+012754 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+012755 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+012756 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+012764 INFO S1 Match Log Success PLT:0 PLI:0
+012764 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+012765 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+012770 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+012771 LEAD S2 -> S1 Append Entries Success
+012773 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+012778 INFO S0 Match Log Success PLT:0 PLI:0
+012779 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+012780 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+012784 LEAD S2 -> S0 Append Entries Success
+012785 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+014256 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+014259 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+014259 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+014260 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+014261 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+014273 INFO S0 Match Log Success PLT:0 PLI:0
+014274 INFO S1 Match Log Success PLT:0 PLI:0
+014274 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+014274 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+014276 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+014277 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+014280 LEAD S2 -> S1 Append Entries Success
+014283 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+014283 LEAD S2 -> S0 Append Entries Success
+014284 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+015760 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+015763 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+015764 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+015763 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+015767 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+015775 INFO S0 Match Log Success PLT:0 PLI:0
+015775 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+015777 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+015780 LEAD S2 -> S0 Append Entries Success
+015781 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+015787 INFO S1 Match Log Success PLT:0 PLI:0
+015788 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+015789 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+015793 LEAD S2 -> S1 Append Entries Success
+015794 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+017264 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+017267 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+017267 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+017268 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+017268 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+017279 INFO S1 Match Log Success PLT:0 PLI:0
+017279 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+017279 INFO S0 Match Log Success PLT:0 PLI:0
+017281 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+017282 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+017286 LEAD S2 -> S0 Append Entries Success
+017288 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+017289 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+017293 LEAD S2 -> S1 Append Entries Success
+017295 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+018772 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+018776 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+018777 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+018781 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+018781 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+018791 INFO S1 Match Log Success PLT:0 PLI:0
+018792 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+018793 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+018798 LEAD S2 -> S1 Append Entries Success
+018800 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+018804 INFO S0 Match Log Success PLT:0 PLI:0
+018804 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+018806 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+018810 LEAD S2 -> S0 Append Entries Success
+018811 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+020278 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+020281 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+020281 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+020281 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+020283 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+020293 INFO S1 Match Log Success PLT:0 PLI:0
+020293 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+020295 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+020299 INFO S0 Match Log Success PLT:0 PLI:0
+020300 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+020300 LEAD S2 -> S1 Append Entries Success
+020301 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+020302 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+020306 LEAD S2 -> S0 Append Entries Success
+020308 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+021782 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+021785 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+021785 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+021785 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+021787 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+021797 INFO S0 Match Log Success PLT:0 PLI:0
+021797 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+021799 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+021803 INFO S1 Match Log Success PLT:0 PLI:0
+021804 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+021805 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+021809 LEAD S2 -> S0 Append Entries Success
+021810 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+021813 LEAD S2 -> S1 Append Entries Success
+021815 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+023286 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+023289 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+023289 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+023290 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+023289 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+023299 INFO S0 Match Log Success PLT:0 PLI:0
+023300 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+023305 INFO S1 Match Log Success PLT:0 PLI:0
+023305 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+023307 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+023310 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+023313 LEAD S2 -> S1 Append Entries Success
+023314 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+023318 LEAD S2 -> S0 Append Entries Success
+023319 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+024790 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+024793 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+024794 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+024798 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+024799 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+024804 INFO S0 Match Log Success PLT:0 PLI:0
+024805 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+024808 INFO S1 Match Log Success PLT:0 PLI:0
+024809 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+024808 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+024811 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+024816 LEAD S2 -> S1 Append Entries Success
+024818 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+024819 LEAD S2 -> S0 Append Entries Success
+024820 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+026294 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+026297 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+026298 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+026297 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+026299 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+026311 INFO S0 Match Log Success PLT:0 PLI:0
+026312 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+026311 INFO S1 Match Log Success PLT:0 PLI:0
+026314 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+026315 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+026316 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+026320 LEAD S2 -> S0 Append Entries Success
+026322 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+026327 LEAD S2 -> S1 Append Entries Success
+026328 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+027798 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+027801 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+027801 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+027802 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+027802 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+027811 INFO S0 Match Log Success PLT:0 PLI:0
+027812 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+027813 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+027818 INFO S1 Match Log Success PLT:0 PLI:0
+027820 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+027821 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+027825 LEAD S2 -> S1 Append Entries Success
+027826 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+027829 LEAD S2 -> S0 Append Entries Success
+027830 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+029302 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+029305 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+029306 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+029305 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+029311 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+029316 INFO S1 Match Log Success PLT:0 PLI:0
+029317 LOG1 S1 -> S2 Replying T:1 S:true CT:0 CI:0
+029322 PERS S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+029324 INFO S0 Match Log Success PLT:0 PLI:0
+029324 LOG1 S0 -> S2 Replying T:1 S:true CT:0 CI:0
+029326 PERS S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+029327 LEAD S2 -> S1 Append Entries Success
+029329 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+029331 LEAD S2 -> S0 Append Entries Success
+029332 PERS S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]
+  ... Passed --   3.0  3   40   11226    0
+PASS
+030806 TIMR S2 Broadcast heartbeat timer timeout, reseting HBT
+030809 LOG1 S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0
+030810 LOG1 S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+030809 LOG1 S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0
+030811 LOG1 S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]
+032707 TIMR S1 Not Leader, checking election timeout
+032710 PERS S1 Save State T:2 VF:1 Log:[{0 0 <nil>}]
+032711 VOTE S1 start election with RequestVoteArgs {2 1 0 0}
+033105 TIMR S0 Not Leader, checking election timeout
+033107 PERS S0 Save State T:2 VF:0 Log:[{0 0 <nil>}]
+033108 VOTE S0 start election with RequestVoteArgs {2 0 0 0}
+ok  	6.824/raft	4.062s

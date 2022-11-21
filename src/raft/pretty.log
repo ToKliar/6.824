@@ -1,0 +1,315 @@
+S0 Started at T:0 VF:-1 Log:[{0 0 <nil>}]                                                                                                                                                
+S0 Started at T:0 LLI:0                                                                                                                                                                  
+                                                               S1 Started at T:0 VF:-1 Log:[{0 0 <nil>}]                                                                                 
+                                                               S1 Started at T:0 LLI:0                                                                                                   
+                                                                                                                            S2 Started at T:0 VF:-1 Log:[{0 0 <nil>}]                    
+                                                                                                                            S2 Started at T:0 LLI:0                                      
+                                                                                                                            S2 Not Leader, checking election timeout                     
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 start election with RequestVoteArgs {1 2 0 0}             
+S0 Term is higher, updating {1 > 0}, request vote                                                                                                                                        
+S0 Grant Vote for S2 in T:1                                                                                                                                                              
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                               S1 Term is higher, updating {1 > 0}, request vote                                                                         
+                                                               S1 Grant Vote for S2 in T:1                                                                                               
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 Achieved Majority for T:1, converting to Leader           
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                                                                                            S2 -> S1 Append Entries Success                              
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Match Log Success PLT:0 PLI:0                                                                                          
+                                                               S1 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                    
+                                                               S1 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                  
+S0 Match Log Success PLT:0 PLI:0                                                                                                                                                         
+S0 -> S2 Replying T:1 S:true CT:0 CI:0                                                                                                                                                   
+S0 Save State T:1 VF:2 Log:[{0 0 <nil>}]                                                                                                                                                 
+                                                                                                                            S2 -> S1 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+                                                                                                                            S2 -> S0 Append Entries Success                              
+                                                                                                                            S2 Save State T:1 VF:2 Log:[{0 0 <nil>}]                     
+#########################################################################################################################################################################################
+PASS
+                                                                                                                            S2 Broadcast heartbeat timer timeout, reseting HBT           
+                                                                                                                            S2 -> S1 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S1 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                                                                                            S2 -> S0 Replicate prevLogIndex: 0, firstIndex:0             
+                                                                                                                            S2 -> S0 Sending PLI:0 PLT:0 T:1 LC:0 - [[]]                 
+                                                               S1 Not Leader, checking election timeout                                                                                  
+                                                               S1 Save State T:2 VF:1 Log:[{0 0 <nil>}]                                                                                  
+                                                               S1 start election with RequestVoteArgs {2 1 0 0}                                                                          
+S0 Not Leader, checking election timeout                                                                                                                                                 
+S0 Save State T:2 VF:0 Log:[{0 0 <nil>}]                                                                                                                                                 
+S0 start election with RequestVoteArgs {2 0 0 0}                                                                                                                                         
