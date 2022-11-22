@@ -45,7 +45,6 @@ type ApplyMsg struct {
 	CommandValid bool
 	Command      interface{}
 	CommandIndex int
-	CommandTerm	 int
 
 	// For 2D:
 	SnapshotValid bool
@@ -65,14 +64,11 @@ type Entry struct {
 //
 type Raft struct {
 	mu        sync.RWMutex          // Lock to protect shared access to this peer's state
-	peers     []*labrpc.ClientEnd // RPC end points of all peers
-	persister *Persister          // Object to hold this peer's persisted state
-	me        int                 // this peer's index into peers[]
-	dead      int32               // set by Kill()
+	peers     []*labrpc.ClientEnd 	// RPC end points of all peers
+	persister *Persister          	// Object to hold this peer's persisted state
+	me        int                 	// this peer's index into peers[]
+	dead      int32               	// set by Kill()
 
-	// Your data here (2A, 2B, 2C).
-	// Look at the paper's Figure 2 for a description of what
-	// state a Raft server must maintain.
 	state		int					// server state
 	currentTerm	int				  	// latest term server has seen
 	votedFor	int				  	// candidateId that received vote in current term
@@ -131,15 +127,6 @@ func (rf *Raft) isLogNewer(lastLogTerm int, lastLogIndex int) bool {
 func (rf *Raft) matchLog(prevLogTerm int, prevLogIndex int) bool {
 	lastIndex := rf.getLastLog().Index
 	if lastIndex < prevLogIndex {
-		DPrintf(dInfo, "S%d Match Log Fail PLT:%d PLI:%d", rf.me, prevLogTerm, prevLogIndex)
-		return false
-	}
-	if len(rf.log) == 0 {
-		firstLog := rf.getFirstLog()
-		if firstLog.Index == prevLogIndex && firstLog.Term == prevLogTerm {
-			DPrintf(dInfo, "S%d Match Log Success PLT:%d PLI:%d", rf.me, prevLogTerm, prevLogIndex)
-			return true
-		}
 		DPrintf(dInfo, "S%d Match Log Fail PLT:%d PLI:%d", rf.me, prevLogTerm, prevLogIndex)
 		return false
 	}
@@ -264,7 +251,6 @@ func (rf *Raft) applier() {
 				CommandValid: 	true,
 				Command: 		entry.Command,
 				CommandIndex:	entry.Index,
-				CommandTerm:	entry.Term,
 			}
 		}
 		rf.mu.Lock()
@@ -414,35 +400,56 @@ func (rf *Raft) replicateEntries(peer int) {
 	rf.mu.RUnlock()
 	if rf.sendAppendEntries(peer, &args, &reply) {
 		rf.mu.Lock()
-		rf.handleAppendEntries(peer, args, reply)
+		if rf.state == StateLeader {
+			rf.handleAppendEntries(peer, args, reply)
+		}
 		rf.mu.Unlock()
 	} 
 }
 
 func (rf *Raft) handleAppendEntries(peer int, args AppendEntriesArgs, reply AppendEntriesReply) {
-	defer rf.persist()
-
 	// 判断的时候需要确认rf的状态是leader 
 	// 只有leader可以进行后续的处理
 	if rf.state != StateLeader || rf.currentTerm != args.Term {
 		DPrintf(dError, "S%d is not leader or changes from previous term: %d", rf.me, args.Term)
 		return
 	}
+
+	if reply.Term > rf.currentTerm {
+		DPrintf(dLeader, "S%d Append Entries Fail", rf.me)
+		DPrintf(dTerm, "S%d Term is higher, updating {%d > %d}, handling append entries, converting to Follower", rf.me, reply.Term, rf.currentTerm)
+		rf.state = StateFollower
+		rf.currentTerm, rf.votedFor = reply.Term, -1
+		rf.electionTimer.Reset(RandomElectionTimeout())
+		rf.persist()
+		return 
+	}
 	
 	if reply.Success {
 		DPrintf(dLeader, "S%d -> S%d Append Entries Success", rf.me, peer)
-		rf.nextIndex[peer] = args.PrevLogIndex + len(args.Entries) + 1
-		rf.matchIndex[peer] = args.PrevLogIndex + len(args.Entries)
+		nextIndex := args.PrevLogIndex + len(args.Entries) + 1
+		rf.nextIndex[peer] = Max(nextIndex, rf.nextIndex[peer])
+		rf.matchIndex[peer] = rf.nextIndex[peer] - 1
 		if rf.getLastLog().Index > rf.commitIndex {
 			indexes := make([]int, len(rf.peers), len(rf.peers))
 			copy(indexes, rf.matchIndex)
 			indexes[rf.me] = rf.getLastLog().Index
 			sort.Ints(indexes)
-			commitIndex := indexes[len(rf.peers) / 2 - 1 + len(rf.peers) % 2]
+			commitIndex := indexes[len(rf.peers) / 2]
 			
 			firstLogIndex := rf.getFirstLog().Index
 			if commitIndex > rf.commitIndex && rf.log[commitIndex - firstLogIndex].Term == rf.currentTerm{
 				rf.commitIndex = commitIndex
+
+				// firstIndex := rf.getFirstLog().Index
+				// lastApplied := rf.lastApplied
+				// for ; lastApplied <= commitIndex; lastApplied++ {
+				// 	if rf.log[lastApplied - firstIndex].Term == rf.currentTerm {
+				// 		break
+				// 	}
+				// }
+				// rf.lastApplied = lastApplied - 1
+
 				DPrintf(dLeader, "S%d Update CI:%d", rf.me, rf.commitIndex)
 				rf.applyCond.Signal()
 			}
@@ -451,15 +458,6 @@ func (rf *Raft) handleAppendEntries(peer int, args AppendEntriesArgs, reply Appe
 	}
 
 	DPrintf(dLeader, "S%d Append Entries Fail", rf.me)
-
-	if reply.Term > rf.currentTerm {
-		DPrintf(dTerm, "S%d Term is higher, updating {%d > %d}, handling append entries, converting to Follower", rf.me, reply.Term, rf.currentTerm)
-		rf.state = StateFollower
-		rf.currentTerm, rf.votedFor = reply.Term, -1
-		rf.electionTimer.Reset(RandomElectionTimeout())
-		return 
-	}
-
 	if reply.ConflictTerm == -1 {
 		rf.nextIndex[peer] = reply.ConflictIndex
 	} else {
@@ -478,6 +476,7 @@ func (rf *Raft) handleAppendEntries(peer int, args AppendEntriesArgs, reply Appe
 			rf.nextIndex[peer] = reply.ConflictIndex
 		}
 	}
+	go rf.replicateEntries(peer)
 }
 
 //
@@ -556,7 +555,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 				index--
 			}
 			reply.ConflictIndex = index
-			rf.log = rf.log[:args.PrevLogIndex - firstIndex]
+			// rf.log = rf.log[:args.PrevLogIndex - firstIndex]
 
 		}
 		DPrintf(dLog, "S%d -> S%d Replying T:%d S:%t CT:%d CI:%d", rf.me, args.LeaderId, reply.Term, reply.Success, reply.ConflictTerm, reply.ConflictIndex)
