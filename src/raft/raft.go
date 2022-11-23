@@ -555,8 +555,6 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 				index--
 			}
 			reply.ConflictIndex = index
-			// rf.log = rf.log[:args.PrevLogIndex - firstIndex]
-
 		}
 		DPrintf(dLog, "S%d -> S%d Replying T:%d S:%t CT:%d CI:%d", rf.me, args.LeaderId, reply.Term, reply.Success, reply.ConflictTerm, reply.ConflictIndex)
 		return 
@@ -574,11 +572,14 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	if args.LeaderCommit > rf.commitIndex {
 		oldCommitIndex := rf.commitIndex
 		rf.commitIndex = Min(args.LeaderCommit, rf.getLastLog().Index)
-		if rf.commitIndex > oldCommitIndex {
+		if rf.commitIndex != oldCommitIndex {
 			DPrintf(dInfo, "S%d CI:%d", rf.me, rf.commitIndex)
-			rf.applyCond.Signal()
+			if rf.commitIndex > rf.lastApplied {
+				rf.applyCond.Signal()
+			}
 		}
 	}
+
 	reply.Term = rf.currentTerm
 	reply.Success = true
 	DPrintf(dLog, "S%d -> S%d Replying T:%d S:%t CT:%d CI:%d", rf.me, args.LeaderId, reply.Term, reply.Success, reply.ConflictTerm, reply.ConflictIndex)
