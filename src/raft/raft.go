@@ -325,6 +325,7 @@ func (rf *Raft) StartElection() {
 				if rf.currentTerm == requestVoteReply.Term && rf.state == StateCandidate {
 					if requestVoteReply.VoteGranted {
 						getVotedCount += 1
+						DPrintf(dVote, "S%d Get Vote from S%d", rf.me, i)
 						if getVotedCount > len(rf.peers) / 2 {
 							DPrintf(dLeader, "S%d Achieved Majority for T:%d, converting to Leader", rf.me, rf.currentTerm)
 							rf.state = StateLeader
@@ -334,11 +335,14 @@ func (rf *Raft) StartElection() {
 							}
 							rf.DoHeartBeat(true)
 						}
-					} else if requestVoteReply.Term > rf.currentTerm {
-						DPrintf(dTerm, "S%d Term is higher, updating {%d > %d}, handling request vote, converting to Follower", rf.me, requestVoteReply.Term, rf.currentTerm)
-						rf.state = StateFollower
-						rf.currentTerm = requestVoteReply.Term
-						rf.votedFor = -1
+					} else {
+						DPrintf(dVote, "S%d Don't Get Vote from S%d", rf.me, i)
+						if requestVoteReply.Term > rf.currentTerm {
+							DPrintf(dTerm, "S%d Term is higher, updating {%d > %d}, handling request vote, converting to Follower", rf.me, requestVoteReply.Term, rf.currentTerm)
+							rf.state = StateFollower
+							rf.currentTerm = requestVoteReply.Term
+							rf.votedFor = -1
+						}
 					}
 				}
 			}
@@ -573,7 +577,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		oldCommitIndex := rf.commitIndex
 		rf.commitIndex = Min(args.LeaderCommit, rf.getLastLog().Index)
 		if rf.commitIndex != oldCommitIndex {
-			DPrintf(dInfo, "S%d CI:%d", rf.me, rf.commitIndex)
+			DPrintf(dInfo, "S%d Update CI:%d", rf.me, rf.commitIndex)
 			if rf.commitIndex > rf.lastApplied {
 				rf.applyCond.Signal()
 			}

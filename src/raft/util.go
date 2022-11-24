@@ -9,7 +9,8 @@ import "math/rand"
 
 // Debugging
 const Debug = 1
-const heartBeatDuration = 125 * time.Millisecond
+// const heartBeatDuration = 125 * time.Millisecond
+const heartBeatDuration = 50 * time.Millisecond
 
 var debugStart time.Time
 var debugVerbosity int
@@ -66,7 +67,7 @@ func DPrintf(topic logTopic, format string, a ...interface{}) (n int, err error)
 }
 
 func RandomElectionTimeout() time.Duration {
-	return time.Millisecond * time.Duration(250 + rand.Intn(200))
+	return time.Millisecond * time.Duration(150 + rand.Intn(200))
 }
 
 func HeartBeatTimeout() time.Duration {
