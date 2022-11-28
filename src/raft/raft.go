@@ -222,6 +222,7 @@ func (rf *Raft) applier() {
 			rf.applyCond.Wait()
 		}
 		firstIndex, commitIndex, lastApplied := rf.getFirstLog().Index, rf.commitIndex, rf.lastApplied
+		DPrintf(dCommit, "S%d Begin to Apply, LA:%d, CI:%d, FI:%d", rf.me, lastApplied, commitIndex, firstIndex)
 		entries := make([]Entry, commitIndex - lastApplied)
 		copy(entries, rf.log[lastApplied+1-firstIndex:commitIndex+1-firstIndex])
 		rf.mu.Unlock()
@@ -476,16 +477,6 @@ func (rf *Raft) handleAppendEntries(peer int, args AppendEntriesArgs, reply Appe
 			firstLogIndex := rf.getFirstLog().Index
 			if commitIndex > rf.commitIndex && rf.log[commitIndex - firstLogIndex].Term == rf.currentTerm{
 				rf.commitIndex = commitIndex
-
-				// firstIndex := rf.getFirstLog().Index
-				// lastApplied := rf.lastApplied
-				// for ; lastApplied <= commitIndex; lastApplied++ {
-				// 	if rf.log[lastApplied - firstIndex].Term == rf.currentTerm {
-				// 		break
-				// 	}
-				// }
-				// rf.lastApplied = lastApplied - 1
-
 				DPrintf(dLeader, "S%d Update CI:%d", rf.me, rf.commitIndex)
 				rf.applyCond.Signal()
 			}
@@ -610,7 +601,7 @@ func (rf *Raft) handleInstallSnapshot(peer int, args InstallSnapshotArgs, reply 
 	}
 
 	if reply.Term > rf.currentTerm {
-		DPrintf(dLeader, "S%d Append Entries Fail", rf.me)
+		DPrintf(dLeader, "S%d Install Snapshot Fail", rf.me)
 		DPrintf(dTerm, "S%d Term is higher, updating {%d > %d}, handling install snapshot, converting to Follower", rf.me, reply.Term, rf.currentTerm)
 		rf.state = StateFollower
 		rf.currentTerm, rf.votedFor = reply.Term, -1
@@ -861,6 +852,10 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.readPersist(persister.ReadRaftState())
 	DPrintf(dClient, "S%d Started at T:%d LLI:%d", rf.me, rf.currentTerm, rf.getLastLog().Index)
 	
+	if rf.getFirstLog().Index > rf.lastApplied {
+		rf.lastApplied = rf.getFirstLog().Index
+	}
+
 	lastLog := rf.getLastLog()
 	for i := 0; i < len(peers); i++ {
 		rf.matchIndex[i], rf.nextIndex[i] = 0, lastLog.Index+1
