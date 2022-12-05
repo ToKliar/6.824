@@ -7,6 +7,7 @@ import (
 	"log"
 	"sync"
 	"sync/atomic"
+	"time"
 )
 
 const Debug = false
@@ -26,7 +27,7 @@ type Op struct {
 }
 
 type KVServer struct {
-	mu      sync.Mutex
+	mu      sync.RWMutex
 	me      int
 	rf      *raft.Raft
 	applyCh chan raft.ApplyMsg
@@ -34,16 +35,58 @@ type KVServer struct {
 
 	maxraftstate int // snapshot if log grows this big
 
-	// Your definitions here.
+	stateMachine 	KVStateMachine
+	notifyChans		map[int]chan *CommandReply
 }
 
-
-func (kv *KVServer) Get(args *GetArgs, reply *GetReply) {
-	// Your code here.
+func (kv *KVServer) Command(args *CommandArgs, reply *CommandReply) {
+	kv.mu.RLock()
+	index, _, is_leader := kv.rf.Start(args)
+	if !is_leader {
+		reply.Err = ErrWrongLeader
+		kv.mu.RUnlock()
+		return 
+	}
+	kv.mu.RUnlock()
+	kv.mu.Lock()
+	ch := kv.notifyChans[index]
+	kv.mu.Unlock()
+	select {
+	case result := <-ch:
+		reply.Value, reply.Err = result.Value, result.Err
+	case <-time.After(ExecuteTimeout):
+		reply.Err = ErrTimeout
+	}
 }
 
-func (kv *KVServer) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
-	// Your code here.
+func (kv *KVServer) applier() {
+	for kv.killed() == false {
+		select {
+		case message := <-kv.applyCh:
+			kv.mu.Lock()
+			var reply *CommandReply
+			command := message.Command.(*CommandArgs)
+			reply = kv.applyLogToStateMachine(command) 
+
+			if currentTerm, isLeader := kv.rf.GetState(); isLeader && message.CommandTerm == currentTerm {
+				ch := kv.notifyChans[message.CommandIndex]
+				ch <- reply
+			}
+			kv.mu.Unlock()
+		}
+	}
+}
+
+func (kv *KVServer) applyLogToStateMachine(command *CommandArgs) *CommandReply{
+	var reply *CommandReply
+	if command.Op == OpGet {
+		reply.Value, reply.Err = kv.stateMachine.Get(command.Key)
+	} else if command.Op == OpAppend {
+		reply.Err = kv.stateMachine.Append(command.Key, command.Value)
+	} else if command.Op == OpPut {
+		reply.Err = kv.stateMachine.Put(command.Key, command.Value)
+	}
+	return reply
 }
 
 //
@@ -84,7 +127,7 @@ func (kv *KVServer) killed() bool {
 func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister, maxraftstate int) *KVServer {
 	// call labgob.Register on structures you want
 	// Go's RPC library to marshall/unmarshall.
-	labgob.Register(Op{})
+	labgob.Register(CommandArgs{})
 
 	kv := new(KVServer)
 	kv.me = me
@@ -94,6 +137,7 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 
 	kv.applyCh = make(chan raft.ApplyMsg)
 	kv.rf = raft.Make(servers, me, persister, kv.applyCh)
+	kv.stateMachine = MakeMemoryKV()
 
 	// You may need initialization code here.
 
