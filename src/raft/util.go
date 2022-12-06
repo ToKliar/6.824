@@ -56,7 +56,7 @@ func getVerbosity() int {
 }
 
 func DPrintf(topic logTopic, format string, a ...interface{}) (n int, err error) {
-	if debugVerbosity > 0 {
+	if debugVerbosity == 1 {
 		t := time.Since(debugStart).Microseconds()
 		t /= 100
 		prefix := fmt.Sprintf("%06d %v ", t, string(topic))

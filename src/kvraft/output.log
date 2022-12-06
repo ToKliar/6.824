@@ -1,0 +1,769 @@
+Test: many clients (3A) ...
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Not Leader
+KVS2 Not Leader
+KVS4 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS0 Not Leader
+KVS0 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Not Leader
+KVS0 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS3 Not Leader
+KVS1 Not Leader
+KVS0 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS1 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Not Leader
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS1 Not Leader
+KVS2 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS2 Not Leader
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS2 Not Leader
+KVS0 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS2 Not Leader
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Not Leader
+KVS4 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS4 Not Leader
+KVS3 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS0 Not Leader
+KVS3 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS3 Not Leader
+KVS3 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS3 Not Leader
+KVS0 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Not Leader
+KVS2 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Not Leader
+KVS2 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS2 Not Leader
+KVS4 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Receive Command From Client:3913476434513320901 Op:Put CommandId:0
+KVS0 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS0 Not Leader
+KVS1 Receive Command From Client:4558499854627828866 Op:Put CommandId:0
+KVS4 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS4 Not Leader
+KVS1 Get Message
+KVS1 apply log Op:Put Key:4 Value:, StateMachine:{map[]}
+KVS1 Get Reply &{OK } From Arg {4  Put 0 3913476434513320901}
+KVS1 Get Reply &{OK }
+KVS1 Receive Command From Client:2640269043610901918 Op:Put CommandId:0
+KVS1 Receive Command From Client:892177705894153254 Op:Put CommandId:0
+KVS1 Receive Command From Client:3913476434513320901 Op:Append CommandId:1
+KVS3 Get Message
+KVS3 apply log Op:Put Key:4 Value:, StateMachine:{map[]}
+KVS3 Get Reply &{OK } From Arg {4  Put 0 3913476434513320901}
+KVS1 Get Message
+KVS1 apply log Op:Put Key:0 Value:, StateMachine:{map[4:]}
+KVS1 Get Reply &{OK } From Arg {0  Put 0 4558499854627828866}
+KVS1 Get Reply &{OK }
+KVS0 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS0 Not Leader
+KVS0 Get Message
+KVS0 apply log Op:Put Key:4 Value:, StateMachine:{map[]}
+KVS0 Get Reply &{OK } From Arg {4  Put 0 3913476434513320901}
+KVS1 Receive Command From Client:4558499854627828866 Op:Get CommandId:1
+KVS0 Get Message
+KVS0 apply log Op:Put Key:0 Value:, StateMachine:{map[4:]}
+KVS0 Get Reply &{OK } From Arg {0  Put 0 4558499854627828866}
+KVS1 Get Message
+KVS1 apply log Op:Put Key:3 Value:, StateMachine:{map[0: 4:]}
+KVS1 Get Reply &{OK } From Arg {3  Put 0 2640269043610901918}
+KVS4 Get Message
+KVS4 apply log Op:Put Key:4 Value:, StateMachine:{map[]}
+KVS1 Receive Command From Client:1870243305932854841 Op:Put CommandId:0
+KVS1 Get Reply &{OK }
+KVS4 Get Reply &{OK } From Arg {4  Put 0 3913476434513320901}
+KVS1 Get Message
+KVS1 apply log Op:Put Key:1 Value:, StateMachine:{map[0: 3: 4:]}
+KVS1 Get Reply &{OK } From Arg {1  Put 0 892177705894153254}
+KVS1 Get Reply &{OK }
+KVS1 Get Message
+KVS1 apply log Op:Append Key:4 Value:x 4 0 y, StateMachine:{map[0: 1: 3: 4:]}
+KVS1 Get Reply &{OK } From Arg {4 x 4 0 y Append 1 3913476434513320901}
+KVS1 Get Reply &{OK }
+KVS1 Receive Command From Client:2640269043610901918 Op:Append CommandId:1
+KVS1 Receive Command From Client:892177705894153254 Op:Get CommandId:1
+KVS4 Get Message
+KVS4 apply log Op:Put Key:0 Value:, StateMachine:{map[4:]}
+KVS4 Get Reply &{OK } From Arg {0  Put 0 4558499854627828866}
+KVS4 Get Message
+KVS4 apply log Op:Put Key:3 Value:, StateMachine:{map[0: 4:]}
+KVS4 Get Reply &{OK } From Arg {3  Put 0 2640269043610901918}
+KVS0 Get Message
+KVS0 apply log Op:Put Key:3 Value:, StateMachine:{map[0: 4:]}
+KVS0 Get Reply &{OK } From Arg {3  Put 0 2640269043610901918}
+KVS0 Get Message
+KVS0 apply log Op:Put Key:1 Value:, StateMachine:{map[0: 3: 4:]}
+KVS0 Get Reply &{OK } From Arg {1  Put 0 892177705894153254}
+KVS4 Get Message
+KVS4 apply log Op:Put Key:1 Value:, StateMachine:{map[0: 3: 4:]}
+KVS4 Get Reply &{OK } From Arg {1  Put 0 892177705894153254}
+KVS1 Receive Command From Client:3913476434513320901 Op:Get CommandId:2
+KVS3 Get Message
+KVS1 Get Message
+KVS0 Get Message
+KVS3 apply log Op:Put Key:0 Value:, StateMachine:{map[4:]}
+KVS3 Get Reply &{OK } From Arg {0  Put 0 4558499854627828866}
+KVS3 Get Message
+KVS3 apply log Op:Put Key:3 Value:, StateMachine:{map[0: 4:]}
+KVS3 Get Reply &{OK } From Arg {3  Put 0 2640269043610901918}
+KVS1 apply log Op:Put Key:2 Value:, StateMachine:{map[0: 1: 3: 4:x 4 0 y]}
+KVS1 Get Reply &{OK } From Arg {2  Put 0 1870243305932854841}
+KVS3 Get Message
+KVS3 apply log Op:Put Key:1 Value:, StateMachine:{map[0: 3: 4:]}
+KVS3 Get Reply &{OK } From Arg {1  Put 0 892177705894153254}
+KVS3 Get Message
+KVS3 apply log Op:Append Key:4 Value:x 4 0 y, StateMachine:{map[0: 1: 3: 4:]}
+KVS3 Get Reply &{OK } From Arg {4 x 4 0 y Append 1 3913476434513320901}
+KVS0 apply log Op:Append Key:4 Value:x 4 0 y, StateMachine:{map[0: 1: 3: 4:]}
+KVS0 Get Reply &{OK } From Arg {4 x 4 0 y Append 1 3913476434513320901}
+KVS0 Get Message
+KVS0 apply log Op:Put Key:2 Value:, StateMachine:{map[0: 1: 3: 4:x 4 0 y]}
+KVS0 Get Reply &{OK } From Arg {2  Put 0 1870243305932854841}
+KVS4 Get Message
+KVS4 apply log Op:Append Key:4 Value:x 4 0 y, StateMachine:{map[0: 1: 3: 4:]}
+KVS4 Get Reply &{OK } From Arg {4 x 4 0 y Append 1 3913476434513320901}
+KVS4 Get Message
+KVS4 apply log Op:Put Key:2 Value:, StateMachine:{map[0: 1: 3: 4:x 4 0 y]}
+KVS4 Get Reply &{OK } From Arg {2  Put 0 1870243305932854841}
+KVS3 Get Message
+KVS3 apply log Op:Put Key:2 Value:, StateMachine:{map[0: 1: 3: 4:x 4 0 y]}
+KVS3 Get Reply &{OK } From Arg {2  Put 0 1870243305932854841}
+KVS1 Get Message
+KVS1 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS1 Get Reply &{OK } From Arg {0  Get 1 4558499854627828866}
+KVS1 Get Message
+KVS1 apply log Op:Append Key:3 Value:x 3 0 y, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS1 Get Reply &{OK } From Arg {3 x 3 0 y Append 1 2640269043610901918}
+KVS1 Get Reply &{OK }
+KVS0 Get Message
+KVS0 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS0 Get Reply &{OK } From Arg {0  Get 1 4558499854627828866}
+KVS0 Get Message
+KVS0 apply log Op:Append Key:3 Value:x 3 0 y, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS0 Get Reply &{OK } From Arg {3 x 3 0 y Append 1 2640269043610901918}
+KVS1 Get Reply &{OK }
+KVS2 Get Message
+KVS2 apply log Op:Put Key:4 Value:, StateMachine:{map[]}
+KVS2 Get Reply &{OK } From Arg {4  Put 0 3913476434513320901}
+KVS2 Get Message
+KVS2 apply log Op:Put Key:0 Value:, StateMachine:{map[4:]}
+KVS2 Get Reply &{OK } From Arg {0  Put 0 4558499854627828866}
+KVS3 Get Message
+KVS2 Get Message
+KVS1 Get Message
+KVS1 Get Reply &{OK }
+KVS4 Get Message
+KVS1 Receive Command From Client:1870243305932854841 Op:Get CommandId:1
+KVS0 Get Message
+KVS0 apply log Op:Get Key:1 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS2 apply log Op:Put Key:3 Value:, StateMachine:{map[0: 4:]}
+KVS1 apply log Op:Get Key:1 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS4 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS1 Receive Command From Client:4558499854627828866 Op:Get CommandId:2
+KVS3 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS1 Receive Command From Client:2640269043610901918 Op:Append CommandId:2
+KVS0 Get Reply &{OK } From Arg {1  Get 1 892177705894153254}
+KVS4 Get Reply &{OK } From Arg {0  Get 1 4558499854627828866}
+KVS4 Get Message
+KVS2 Get Reply &{OK } From Arg {3  Put 0 2640269043610901918}
+KVS3 Get Reply &{OK } From Arg {0  Get 1 4558499854627828866}
+KVS2 Get Message
+KVS1 Get Reply &{OK } From Arg {1  Get 1 892177705894153254}
+KVS2 apply log Op:Put Key:1 Value:, StateMachine:{map[0: 3: 4:]}
+KVS1 Get Reply &{OK }
+KVS2 Get Reply &{OK } From Arg {1  Put 0 892177705894153254}
+KVS3 Get Message
+KVS3 apply log Op:Append Key:3 Value:x 3 0 y, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS3 Get Reply &{OK } From Arg {3 x 3 0 y Append 1 2640269043610901918}
+KVS3 Get Message
+KVS3 apply log Op:Get Key:1 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS3 Get Reply &{OK } From Arg {1  Get 1 892177705894153254}
+KVS2 Get Message
+KVS2 apply log Op:Append Key:4 Value:x 4 0 y, StateMachine:{map[0: 1: 3: 4:]}
+KVS2 Get Reply &{OK } From Arg {4 x 4 0 y Append 1 3913476434513320901}
+KVS2 Get Message
+KVS2 apply log Op:Put Key:2 Value:, StateMachine:{map[0: 1: 3: 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {2  Put 0 1870243305932854841}
+KVS2 Get Message
+KVS2 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {0  Get 1 4558499854627828866}
+KVS2 Get Message
+KVS2 apply log Op:Append Key:3 Value:x 3 0 y, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {3 x 3 0 y Append 1 2640269043610901918}
+KVS2 Get Message
+KVS2 apply log Op:Get Key:1 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {1  Get 1 892177705894153254}
+KVS4 apply log Op:Append Key:3 Value:x 3 0 y, StateMachine:{map[0: 1: 2: 3: 4:x 4 0 y]}
+KVS4 Get Reply &{OK } From Arg {3 x 3 0 y Append 1 2640269043610901918}
+KVS4 Get Message
+KVS4 apply log Op:Get Key:1 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS4 Get Reply &{OK } From Arg {1  Get 1 892177705894153254}
+KVS3 Get Message
+KVS3 apply log Op:Get Key:4 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS3 Get Reply &{OK x 4 0 y} From Arg {4  Get 2 3913476434513320901}
+KVS4 Get Message
+KVS4 apply log Op:Get Key:4 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS4 Get Reply &{OK x 4 0 y} From Arg {4  Get 2 3913476434513320901}
+KVS1 Receive Command From Client:892177705894153254 Op:Append CommandId:2
+KVS2 Get Message
+KVS2 apply log Op:Get Key:4 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS2 Get Reply &{OK x 4 0 y} From Arg {4  Get 2 3913476434513320901}
+KVS0 Get Message
+KVS0 apply log Op:Get Key:4 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS0 Get Reply &{OK x 4 0 y} From Arg {4  Get 2 3913476434513320901}
+KVS1 Get Message
+KVS1 apply log Op:Get Key:4 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS1 Get Reply &{OK x 4 0 y} From Arg {4  Get 2 3913476434513320901}
+KVS1 Get Reply &{OK x 4 0 y}
+KVS2 Get Message
+KVS2 apply log Op:Get Key:2 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {2  Get 1 1870243305932854841}
+KVS1 Get Message
+KVS1 apply log Op:Get Key:2 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS1 Get Reply &{OK } From Arg {2  Get 1 1870243305932854841}
+KVS3 Get Message
+KVS3 apply log Op:Get Key:2 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS3 Get Reply &{OK } From Arg {2  Get 1 1870243305932854841}
+KVS3 Get Message
+KVS3 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS3 Get Reply &{OK } From Arg {0  Get 2 4558499854627828866}
+KVS2 Get Message
+KVS2 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {0  Get 2 4558499854627828866}
+KVS2 Get Message
+KVS2 apply log Op:Append Key:3 Value:x 3 1 y, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {3 x 3 1 y Append 2 2640269043610901918}
+KVS3 Get Message
+KVS0 Get Message
+KVS4 Get Message
+KVS4 apply log Op:Get Key:2 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS4 Get Reply &{OK } From Arg {2  Get 1 1870243305932854841}
+KVS4 Get Message
+KVS4 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS4 Get Reply &{OK } From Arg {0  Get 2 4558499854627828866}
+KVS4 Get Message
+KVS1 Receive Command From Client:3913476434513320901 Op:Get CommandId:3
+KVS4 apply log Op:Append Key:3 Value:x 3 1 y, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS4 Get Reply &{OK } From Arg {3 x 3 1 y Append 2 2640269043610901918}
+KVS3 apply log Op:Append Key:3 Value:x 3 1 y, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS3 Get Reply &{OK } From Arg {3 x 3 1 y Append 2 2640269043610901918}
+KVS0 apply log Op:Get Key:2 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS0 Get Reply &{OK } From Arg {2  Get 1 1870243305932854841}
+KVS0 Get Message
+KVS0 apply log Op:Get Key:0 Value:, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS0 Get Reply &{OK } From Arg {0  Get 2 4558499854627828866}
+KVS0 Get Message
+KVS0 apply log Op:Append Key:3 Value:x 3 1 y, StateMachine:{map[0: 1: 2: 3:x 3 0 y 4:x 4 0 y]}
+KVS0 Get Reply &{OK } From Arg {3 x 3 1 y Append 2 2640269043610901918}
+KVS0 Get Message
+KVS0 apply log Op:Append Key:1 Value:x 1 0 y, StateMachine:{map[0: 1: 2: 3:x 3 0 yx 3 1 y 4:x 4 0 y]}
+KVS0 Get Reply &{OK } From Arg {1 x 1 0 y Append 2 892177705894153254}
+KVS4 Get Message
+KVS4 apply log Op:Append Key:1 Value:x 1 0 y, StateMachine:{map[0: 1: 2: 3:x 3 0 yx 3 1 y 4:x 4 0 y]}
+KVS3 Get Message
+KVS3 apply log Op:Append Key:1 Value:x 1 0 y, StateMachine:{map[0: 1: 2: 3:x 3 0 yx 3 1 y 4:x 4 0 y]}
+KVS3 Get Reply &{OK } From Arg {1 x 1 0 y Append 2 892177705894153254}
+KVS2 Get Message
+KVS2 apply log Op:Append Key:1 Value:x 1 0 y, StateMachine:{map[0: 1: 2: 3:x 3 0 yx 3 1 y 4:x 4 0 y]}
+KVS2 Get Reply &{OK } From Arg {1 x 1 0 y Append 2 892177705894153254}
+KVS4 Get Reply &{OK } From Arg {1 x 1 0 y Append 2 892177705894153254}
+signal: interrupt
+FAIL	6.824/kvraft	47.180s

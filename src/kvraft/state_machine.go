@@ -1,16 +1,16 @@
 package kvraft
 
-type KVStateMachine interface {
-	Get(key string) (string, Err)
-	Put(key, value string) Err
-	Append(key, value string) Err
-}
+// type KVStateMachine interface {
+// 	Get(key string) (string, Err)
+// 	Put(key, value string) Err
+// 	Append(key, value string) Err
+// }
 
 type MemoryKV struct {
 	KV map[string]string
 }
 
-func MakeMemoryKV() *MemoryKV {
+func NewMemoryKV() *MemoryKV {
 	return &MemoryKV{make(map[string]string)}
 }
 

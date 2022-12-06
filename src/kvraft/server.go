@@ -7,10 +7,23 @@ import (
 	"log"
 	"sync"
 	"sync/atomic"
+	"os"
+	"strconv"
 	"time"
+	"fmt"
 )
 
-const Debug = false
+var Debug bool
+
+func init() {
+	verbosity := getVerbosity()
+	if verbosity == 2 {
+		Debug = true
+	} else {
+		Debug = false
+	}
+}
+
 
 func DPrintf(format string, a ...interface{}) (n int, err error) {
 	if Debug {
@@ -19,11 +32,17 @@ func DPrintf(format string, a ...interface{}) (n int, err error) {
 	return
 }
 
-
-type Op struct {
-	// Your definitions here.
-	// Field names must start with capital letters,
-	// otherwise RPC will break.
+func getVerbosity() int {
+	v := os.Getenv("VERBOSE")
+	level := 0
+	if v != "" {
+		var err error
+		level, err = strconv.Atoi(v)
+		if err != nil {
+			log.Fatalf("Invalid verbosity %v", v)
+		}
+	}
+	return level
 }
 
 type KVServer struct {
@@ -34,51 +53,115 @@ type KVServer struct {
 	dead    int32 // set by Kill()
 
 	maxraftstate int // snapshot if log grows this big
+	lastApplied	 int
 
-	stateMachine 	KVStateMachine
+	stateMachine 	MemoryKV
 	notifyChans		map[int]chan *CommandReply
+	lastOperation	map[int64]OpContext
+}
+
+type OpContext struct {
+	prevCommandId	int
+	result			*CommandReply
+}
+
+func (kv *KVServer) isDuplicateCommand(clientId int64, commandId int) bool {
+	if value, ok := kv.lastOperation[clientId]; ok {
+		if value.prevCommandId >= commandId {
+			return true
+		}
+	}
+	return false
 }
 
 func (kv *KVServer) Command(args *CommandArgs, reply *CommandReply) {
+	DPrintf("KVS%d Receive Command From Client:%d Op:%s CommandId:%d", kv.me, args.ClientId, args.Op, args.CommandId);
 	kv.mu.RLock()
-	index, _, is_leader := kv.rf.Start(args)
-	if !is_leader {
-		reply.Err = ErrWrongLeader
+	if args.Op != OpGet && kv.isDuplicateCommand(args.ClientId, args.CommandId) {
+		prevResult := kv.lastOperation[args.ClientId].result
+		reply.Value, reply.Err = prevResult.Value, prevResult.Err
 		kv.mu.RUnlock()
-		return 
+		return
 	}
 	kv.mu.RUnlock()
+	
+	index, _, isLeader := kv.rf.Start(*args)
+	if !isLeader {
+		DPrintf("KVS%d Not Leader", kv.me);
+		reply.Err = ErrWrongLeader
+		return 
+	}
+	
 	kv.mu.Lock()
-	ch := kv.notifyChans[index]
+	ch, ok := kv.notifyChans[index]
+	if !ok {
+		kv.notifyChans[index] = make(chan *CommandReply)
+		ch = kv.notifyChans[index]
+	}
 	kv.mu.Unlock()
 	select {
 	case result := <-ch:
+		DPrintf("KVS%d Get Reply %v", kv.me, result)
 		reply.Value, reply.Err = result.Value, result.Err
 	case <-time.After(ExecuteTimeout):
+		DPrintf("KVS%d Get Reply Timeout", kv.me)
 		reply.Err = ErrTimeout
 	}
+
+	go func() {
+		kv.mu.Lock()
+		close(kv.notifyChans[index])
+		delete(kv.notifyChans, index)
+		kv.mu.Unlock()
+	}()
 }
 
 func (kv *KVServer) applier() {
 	for kv.killed() == false {
 		select {
 		case message := <-kv.applyCh:
-			kv.mu.Lock()
-			var reply *CommandReply
-			command := message.Command.(*CommandArgs)
-			reply = kv.applyLogToStateMachine(command) 
+			if message.CommandValid {
+				kv.mu.Lock()
+				DPrintf("KVS%d Get Message", kv.me)
+				if message.CommandIndex <= kv.lastApplied {
+					DPrintf("KVS%d discards outdated message %v because a newer snapshot which lastApplied is %v has been restored", kv.me, message, kv.lastApplied)
+					kv.mu.Unlock()
+					continue
+				}
+				kv.lastApplied = message.CommandIndex
 
-			if currentTerm, isLeader := kv.rf.GetState(); isLeader && message.CommandTerm == currentTerm {
-				ch := kv.notifyChans[message.CommandIndex]
-				ch <- reply
+				var reply *CommandReply
+				command := message.Command.(CommandArgs)
+				if command.Op != OpGet && kv.isDuplicateCommand(command.ClientId, command.CommandId) {
+					DPrintf("KVS%d By Client:%d Doesn't Apply Duplicate Command:%d, Last Command:%d", kv.me, 
+						command.ClientId,command.CommandId, kv.lastOperation[command.ClientId].prevCommandId)
+					reply = kv.lastOperation[command.ClientId].result
+				} else {
+					reply = kv.applyLogToStateMachine(command) 
+					if command.Op != OpGet {
+						kv.lastOperation[command.ClientId] = OpContext { command.CommandId, reply}
+					}
+				}
+				
+				DPrintf("KVS%d Get Reply %v From Arg %v", kv.me, reply, command)
+
+				if currentTerm, isLeader := kv.rf.GetState(); isLeader && message.CommandTerm == currentTerm {
+					ch := kv.notifyChans[message.CommandIndex]
+					ch <- reply
+				}
+				kv.mu.Unlock()
+			} else if message.SnapshotValid {
+
+			} else {
+				panic(fmt.Sprintf("unexpected message: %v", message))
 			}
-			kv.mu.Unlock()
 		}
 	}
 }
 
-func (kv *KVServer) applyLogToStateMachine(command *CommandArgs) *CommandReply{
-	var reply *CommandReply
+func (kv *KVServer) applyLogToStateMachine(command CommandArgs) *CommandReply{
+	reply := new(CommandReply)
+	DPrintf("KVS%d apply log Op:%s Key:%s Value:%s, StateMachine:%v", kv.me, command.Op, command.Key, command.Value, kv.stateMachine)
 	if command.Op == OpGet {
 		reply.Value, reply.Err = kv.stateMachine.Get(command.Key)
 	} else if command.Op == OpAppend {
@@ -137,9 +220,12 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 
 	kv.applyCh = make(chan raft.ApplyMsg)
 	kv.rf = raft.Make(servers, me, persister, kv.applyCh)
-	kv.stateMachine = MakeMemoryKV()
+	kv.stateMachine = *NewMemoryKV()
+	kv.notifyChans = make(map[int]chan *CommandReply)
+	kv.lastOperation = make(map[int64]OpContext)
+	kv.lastApplied = 0
 
 	// You may need initialization code here.
-
+	go kv.applier()
 	return kv
 }
