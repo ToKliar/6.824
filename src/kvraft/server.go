@@ -101,19 +101,21 @@ func (kv *KVServer) Command(args *CommandArgs, reply *CommandReply) {
 	kv.mu.Unlock()
 	select {
 	case result := <-ch:
-		DPrintf("KVS%d Get Reply %v", kv.me, result)
+		DPrintf("KVS%d Get Reply %v In Command RPC", kv.me, result)
 		reply.Value, reply.Err = result.Value, result.Err
-	case <-time.After(ExecuteTimeout):
-		DPrintf("KVS%d Get Reply Timeout", kv.me)
-		reply.Err = ErrTimeout
+	case <-time.After(time.Second * 2):
+		DPrintf("KVS%d Get Reply Timeout In Command RPC", kv.me)
+		reply.Err = ErrWrongLeader
 	}
 
-	go func() {
-		kv.mu.Lock()
-		close(kv.notifyChans[index])
-		delete(kv.notifyChans, index)
-		kv.mu.Unlock()
-	}()
+	// go func() {
+	// 	kv.mu.Lock()
+	// 	if reply.Err == OK {
+	// 		close(kv.notifyChans[index])
+	// 		delete(kv.notifyChans, index)
+	// 	}
+	// 	kv.mu.Unlock()
+	// }()
 }
 
 func (kv *KVServer) applier() {
@@ -122,7 +124,7 @@ func (kv *KVServer) applier() {
 		case message := <-kv.applyCh:
 			if message.CommandValid {
 				kv.mu.Lock()
-				DPrintf("KVS%d Get Message", kv.me)
+				DPrintf("KVS%d Get Message CommandTerm:%d CommandIndex:%d", kv.me, message.CommandTerm, message.CommandIndex)
 				if message.CommandIndex <= kv.lastApplied {
 					DPrintf("KVS%d discards outdated message %v because a newer snapshot which lastApplied is %v has been restored", kv.me, message, kv.lastApplied)
 					kv.mu.Unlock()
@@ -137,15 +139,18 @@ func (kv *KVServer) applier() {
 						command.ClientId,command.CommandId, kv.lastOperation[command.ClientId].prevCommandId)
 					reply = kv.lastOperation[command.ClientId].result
 				} else {
+					DPrintf("KVS%d By Client:%d Apply Newest Command:%d, Op:%s, Key:%s, Value:%s", kv.me, 
+						command.ClientId, command.CommandId, command.Op, command.Key, command.Value)
 					reply = kv.applyLogToStateMachine(command) 
 					if command.Op != OpGet {
 						kv.lastOperation[command.ClientId] = OpContext { command.CommandId, reply}
 					}
 				}
 				
-				DPrintf("KVS%d Get Reply %v From Arg %v", kv.me, reply, command)
-
-				if currentTerm, isLeader := kv.rf.GetState(); isLeader && message.CommandTerm == currentTerm {
+				currentTerm, isLeader := kv.rf.GetState()
+				DPrintf("KVS%d Raft State CurrentTerm:%d isLeader:%t", kv.me, currentTerm, isLeader)
+				if isLeader && message.CommandTerm == currentTerm {
+					DPrintf("KVS%d Send Reply %v to Channel Index:%d From Arg %v", kv.me, reply, message.CommandIndex, command)
 					ch := kv.notifyChans[message.CommandIndex]
 					ch <- reply
 				}
@@ -161,7 +166,6 @@ func (kv *KVServer) applier() {
 
 func (kv *KVServer) applyLogToStateMachine(command CommandArgs) *CommandReply{
 	reply := new(CommandReply)
-	DPrintf("KVS%d apply log Op:%s Key:%s Value:%s, StateMachine:%v", kv.me, command.Op, command.Key, command.Value, kv.stateMachine)
 	if command.Op == OpGet {
 		reply.Value, reply.Err = kv.stateMachine.Get(command.Key)
 	} else if command.Op == OpAppend {
@@ -225,7 +229,6 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 	kv.lastOperation = make(map[int64]OpContext)
 	kv.lastApplied = 0
 
-	// You may need initialization code here.
 	go kv.applier()
 	return kv
 }

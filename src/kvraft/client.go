@@ -67,6 +67,7 @@ func (ck *Clerk) Command(args *CommandArgs) string {
 	for {
 		var reply CommandReply
 		if !ck.servers[ck.leaderId].Call("KVServer.Command", args, &reply) || reply.Err == ErrWrongLeader || reply.Err == ErrTimeout {
+			DPrintf("C%d Try Another Time Command%d", ck.clientId, ck.commandId)
 			ck.leaderId = (ck.leaderId + 1) % len(ck.servers)
 			continue
 		}
