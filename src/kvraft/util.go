@@ -2,4 +2,4 @@ package kvraft
 
 import "time"
 
-const ExecuteTimeout = 2000 * time.Millisecond
+const ExecuteTimeout = 1500 * time.Millisecond

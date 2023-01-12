@@ -95,7 +95,7 @@ func (kv *KVServer) Command(args *CommandArgs, reply *CommandReply) {
 	kv.mu.Lock()
 	ch, ok := kv.notifyChans[index]
 	if !ok {
-		kv.notifyChans[index] = make(chan *CommandReply)
+		kv.notifyChans[index] = make(chan *CommandReply, 1)
 		ch = kv.notifyChans[index]
 	}
 	kv.mu.Unlock()
