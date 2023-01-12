@@ -108,14 +108,14 @@ func (kv *KVServer) Command(args *CommandArgs, reply *CommandReply) {
 		reply.Err = ErrWrongLeader
 	}
 
-	// go func() {
-	// 	kv.mu.Lock()
-	// 	if reply.Err == OK {
-	// 		close(kv.notifyChans[index])
-	// 		delete(kv.notifyChans, index)
-	// 	}
-	// 	kv.mu.Unlock()
-	// }()
+	go func() {
+		kv.mu.Lock()
+		if reply.Err == OK {
+			close(kv.notifyChans[index])
+			delete(kv.notifyChans, index)
+		}
+		kv.mu.Unlock()
+	}()
 }
 
 func (kv *KVServer) applier() {
@@ -151,7 +151,11 @@ func (kv *KVServer) applier() {
 				DPrintf("KVS%d Raft State CurrentTerm:%d isLeader:%t", kv.me, currentTerm, isLeader)
 				if isLeader && message.CommandTerm == currentTerm {
 					DPrintf("KVS%d Send Reply %v to Channel Index:%d From Arg %v", kv.me, reply, message.CommandIndex, command)
-					ch := kv.notifyChans[message.CommandIndex]
+					ch, ok := kv.notifyChans[message.CommandIndex]
+					if !ok {
+						kv.notifyChans[message.CommandIndex] = make(chan *CommandReply, 1)
+						ch = kv.notifyChans[message.CommandIndex]
+					}
 					ch <- reply
 				}
 				kv.mu.Unlock()

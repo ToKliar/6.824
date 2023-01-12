@@ -189,6 +189,8 @@ func (rf *Raft) readPersist(data []byte) {
 	  rf.votedFor = votedFor
 	  rf.log = make([]Entry, len(log), len(log))
 	  copy(rf.log, log)
+	  rf.commitIndex = rf.log[0].Index
+	  rf.lastApplied = rf.log[0].Index
 	  DPrintf(dPersist, "S%d Load State T:%d VF:%d Log:%v", rf.me, rf.currentTerm, rf.votedFor, rf.log)
 	}
 }
@@ -304,7 +306,7 @@ func (rf *Raft) StartElection() {
 				rf.mu.Lock()
 				defer rf.mu.Unlock()
 				defer rf.persist()
-				if rf.currentTerm == requestVoteReply.Term && rf.state == StateCandidate {
+				if rf.currentTerm == requestVoteReply.Term && rf.state == StateCandidate && rf.currentTerm == requestVoteArgs.Term{
 					if requestVoteReply.VoteGranted {
 						getVotedCount += 1
 						DPrintf(dVote, "S%d Get Vote from S%d", rf.me, i)
@@ -682,9 +684,9 @@ func (rf *Raft) CondInstallSnapshot(lastIncludedTerm int, lastIncludedIndex int,
 		rf.log = make([]Entry, 1)
 	} else {
 		rf.log = shrinkEntriesArray(rf.log[lastIncludedIndex - rf.getFirstLog().Index:])
-		rf.log[0].Command = nil
 	}
 
+	rf.log[0].Command = nil
 	rf.log[0].Term, rf.log[0].Index = lastIncludedTerm, lastIncludedIndex
 	rf.lastApplied, rf.commitIndex = lastIncludedIndex, lastIncludedIndex
 
