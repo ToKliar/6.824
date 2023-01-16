@@ -526,7 +526,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
 	defer rf.persist()
-	
+
 	if args.Term < rf.currentTerm {
 		reply.Term = rf.currentTerm
 		reply.Success = false
@@ -555,6 +555,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 		reply.Term = rf.currentTerm
 		reply.Success = false
 		lastIndex := rf.getLastLog().Index
+		DPrintf(dLog, "S%d FI:%d LI:%d PI:%d", rf.me, rf.getFirstLog().Index, lastIndex, args.PrevLogIndex)
 		if lastIndex < args.PrevLogIndex {
 			reply.ConflictTerm = -1
 			reply.ConflictIndex = lastIndex + 1
@@ -562,7 +563,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 			firstIndex := rf.getFirstLog().Index
 			reply.ConflictTerm = rf.log[args.PrevLogIndex - firstIndex].Term
 			index := args.PrevLogIndex - 1
-			for index >= firstIndex && rf.log[index].Term == reply.ConflictTerm {
+			for index >= firstIndex && rf.log[index - firstIndex].Term == reply.ConflictTerm {
 				index--
 			}
 			reply.ConflictIndex = index
