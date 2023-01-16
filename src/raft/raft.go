@@ -102,6 +102,10 @@ func (rf *Raft) getLastLog() Entry {
 	return rf.log[len(rf.log)-1]
 }
 
+func (rf *Raft) GetRaftStateSize() int {
+	return rf.persister.RaftStateSize()
+}
+
 func (rf *Raft) appendNewEntry(command interface{}) Entry {
 	lastIndex := rf.getLastLog().Index
 	entry := Entry {
@@ -701,6 +705,67 @@ func (rf *Raft) CondInstallSnapshot(lastIncludedTerm int, lastIncludedIndex int,
 	rf.persister.SaveStateAndSnapshot(rf.encodeState(), snapshot)
 	DPrintf(dPersist, "S%d After Snapshot State:%d, Term:%d, CI:%d, LA:%d, FirstLog:%v, LastLog:%v, LII:%d, LIT:%d", rf.me, rf.state, rf.currentTerm, rf.commitIndex, rf.lastApplied, rf.getFirstLog(), rf.getLastLog(), lastIncludedIndex, lastIncludedTerm)
 	return true
+}
+
+func (rf *Raft) ReplaceLogSnapshot(lastIncludedIndex int, snapshot []byte) {
+	rf.mu.Lock()
+	defer rf.mu.Unlock()
+	DPrintf(dPersist, "S%d Install Snapshot from Server LII:%d", rf.me, lastIncludedIndex)
+	if lastIncludedIndex < rf.getFirstLog().Index {
+		DPrintf(dPersist, "S%d Reject Snapshot LII:%d, First Log is Bigger I:%d", rf.me, lastIncludedIndex, rf.getFirstLog().Index)
+		return 
+	}
+	if lastIncludedIndex > rf.commitIndex {
+		DPrintf(dPersist, "S%d Reject Snapshot LII:%d, Commit Index is Smaller CI:%d", rf.me, lastIncludedIndex, rf.commitIndex)
+		return 
+	}
+
+	rf.log = shrinkEntriesArray(rf.log[lastIncludedIndex - rf.getFirstLog().Index:])
+
+	rf.persister.SaveStateAndSnapshot(rf.encodeState(), snapshot)
+	DPrintf(dPersist, "S%d State-Size:%d", rf.me, rf.persister.RaftStateSize())
+	// for i := range rf.peers {
+	// 	if i == rf.me {
+	// 		continue
+	// 	}
+	// 	go rf.syncSnapshotWith(i, lastIncludedIndex)
+	// }
+	DPrintf(dPersist, "S%d After Snapshot State:%d, Term:%d, CI:%d, LA:%d, FirstLog:%v, LastLog:%v, LII:%d", rf.me, rf.state, rf.currentTerm, rf.commitIndex, rf.lastApplied, rf.getFirstLog(), rf.getLastLog(), lastIncludedIndex)
+}
+
+func (rf *Raft) syncSnapshotWith(server int, snapshotIndex int) {
+    rf.mu.Lock()
+    if rf.state != StateLeader {
+        rf.mu.Unlock()
+        return
+    }
+    args := InstallSnapshotArgs{
+        Term:              rf.currentTerm,
+        LeaderId:          rf.me,
+        LastIncludedIndex: snapshotIndex,
+        LastIncludedTerm:  rf.log[0].Term,
+        Data:              rf.persister.ReadSnapshot(),
+    }
+    rf.mu.Unlock()
+
+    var reply InstallSnapshotReply
+
+    if rf.sendInstallSnapshot(server, &args, &reply) {
+        rf.mu.Lock()
+        if reply.Term > rf.currentTerm {
+            rf.currentTerm = reply.Term
+			rf.votedFor = -1
+			rf.state = StateFollower
+			rf.electionTimer.Reset(RandomElectionTimeout())
+            rf.persist()
+        } else {
+            if rf.matchIndex[server] < args.LastIncludedIndex {
+                rf.matchIndex[server] = args.LastIncludedIndex
+            }
+            rf.nextIndex[server] = rf.matchIndex[server] + 1
+        }
+        rf.mu.Unlock()
+    }
 }
 
 // the service says it has created a snapshot that has

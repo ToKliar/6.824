@@ -4,6 +4,7 @@ import (
 	"6.824/labgob"
 	"6.824/labrpc"
 	"6.824/raft"
+	"bytes"
 	"log"
 	"sync"
 	"sync/atomic"
@@ -52,7 +53,7 @@ type KVServer struct {
 	applyCh chan raft.ApplyMsg
 	dead    int32 // set by Kill()
 
-	maxraftstate int // snapshot if log grows this big
+	maxRaftState int // snapshot if log grows this big
 	lastApplied	 int
 
 	stateMachine 	MemoryKV
@@ -61,24 +62,56 @@ type KVServer struct {
 }
 
 type OpContext struct {
-	prevCommandId	int
-	result			*CommandReply
+	PrevCommandId	int
+	Result			*CommandReply
 }
 
 func (kv *KVServer) isDuplicateCommand(clientId int64, commandId int) bool {
 	if value, ok := kv.lastOperation[clientId]; ok {
-		if value.prevCommandId >= commandId {
+		if value.PrevCommandId >= commandId {
 			return true
 		}
 	}
 	return false
 }
 
+func (kv *KVServer) needSnapshot() bool {
+	if kv.maxRaftState == -1 {
+		return false
+	}
+	DPrintf("KVS%d Judge State-Size:%d Max-Size:%d", kv.me, kv.rf.GetRaftStateSize(), kv.maxRaftState)
+	return kv.rf.GetRaftStateSize() >= kv.maxRaftState
+}
+
+func (kv *KVServer) takeSnapshot(commandIndex int) {
+	w := new(bytes.Buffer)
+	e := labgob.NewEncoder(w)
+	e.Encode(kv.lastApplied)
+	e.Encode(kv.stateMachine.KV)
+	e.Encode(kv.lastOperation)
+	kv.rf.ReplaceLogSnapshot(commandIndex, w.Bytes())
+}
+
+func (kv *KVServer) restoreSnapshot(snapshot []byte) {
+	r := bytes.NewBuffer(snapshot)
+	d := labgob.NewDecoder(r)
+	var lastApplied int
+	var kvStore map[string]string
+	var lastOperation map[int64]OpContext
+	if d.Decode(&lastApplied) == nil && d.Decode(&kvStore) == nil && d.Decode(&lastOperation) == nil {
+		kv.lastApplied = lastApplied
+		kv.lastOperation = lastOperation
+		kv.stateMachine = MemoryKV{kvStore}
+	} else {
+		DPrintf("KVS%d Fails to Read Persist Snapshot", kv.me)
+	}
+}
+
 func (kv *KVServer) Command(args *CommandArgs, reply *CommandReply) {
 	DPrintf("KVS%d Receive Command From Client:%d Op:%s CommandId:%d", kv.me, args.ClientId, args.Op, args.CommandId);
 	kv.mu.RLock()
 	if args.Op != OpGet && kv.isDuplicateCommand(args.ClientId, args.CommandId) {
-		prevResult := kv.lastOperation[args.ClientId].result
+		prevResult := kv.lastOperation[args.ClientId].Result
 		reply.Value, reply.Err = prevResult.Value, prevResult.Err
 		kv.mu.RUnlock()
 		return
@@ -136,8 +169,8 @@ func (kv *KVServer) applier() {
 				command := message.Command.(CommandArgs)
 				if command.Op != OpGet && kv.isDuplicateCommand(command.ClientId, command.CommandId) {
 					DPrintf("KVS%d By Client:%d Doesn't Apply Duplicate Command:%d, Last Command:%d", kv.me, 
-						command.ClientId,command.CommandId, kv.lastOperation[command.ClientId].prevCommandId)
-					reply = kv.lastOperation[command.ClientId].result
+						command.ClientId,command.CommandId, kv.lastOperation[command.ClientId].PrevCommandId)
+					reply = kv.lastOperation[command.ClientId].Result
 				} else {
 					DPrintf("KVS%d By Client:%d Apply Newest Command:%d, Op:%s, Key:%s, Value:%s", kv.me, 
 						command.ClientId, command.CommandId, command.Op, command.Key, command.Value)
@@ -158,9 +191,20 @@ func (kv *KVServer) applier() {
 					}
 					ch <- reply
 				}
+
+				needSnapshot := kv.needSnapshot()
+				if needSnapshot {
+					DPrintf("KVS%d Need Snapshot, CommandIndex:%d", kv.me, message.CommandIndex);
+					kv.takeSnapshot(message.CommandIndex)
+				}
 				kv.mu.Unlock()
 			} else if message.SnapshotValid {
-
+				kv.mu.Lock()
+				if kv.rf.CondInstallSnapshot(message.SnapshotTerm, message.SnapshotIndex, message.Snapshot) {
+					kv.restoreSnapshot(message.Snapshot)
+					kv.lastApplied = message.SnapshotIndex
+				}
+				kv.mu.Unlock()
 			} else {
 				panic(fmt.Sprintf("unexpected message: %v", message))
 			}
@@ -222,7 +266,7 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 
 	kv := new(KVServer)
 	kv.me = me
-	kv.maxraftstate = maxraftstate
+	kv.maxRaftState = maxraftstate
 
 	// You may need initialization code here.
 
@@ -232,6 +276,9 @@ func StartKVServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persiste
 	kv.notifyChans = make(map[int]chan *CommandReply)
 	kv.lastOperation = make(map[int64]OpContext)
 	kv.lastApplied = 0
+
+	snapshot := persister.ReadSnapshot()
+	kv.restoreSnapshot(snapshot)
 
 	go kv.applier()
 	return kv
