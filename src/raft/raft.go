@@ -166,7 +166,7 @@ func (rf *Raft) persist() {
 	e.Encode(rf.log)
 	data := w.Bytes()
 	rf.persister.SaveRaftState(data)
-	DPrintf(dPersist, "S%d Save State T:%d VF:%d Log:%v", rf.me, rf.currentTerm, rf.votedFor, rf.log)
+	DPrintf(dPersist, "S%d Save State T:%d VF:%d First-Log:%v Last-Log:%v", rf.me, rf.currentTerm, rf.votedFor, rf.log[0], rf.log[len(rf.log)-1])
 }
 
 
@@ -191,7 +191,7 @@ func (rf *Raft) readPersist(data []byte) {
 	  copy(rf.log, log)
 	  rf.commitIndex = rf.log[0].Index
 	  rf.lastApplied = rf.log[0].Index
-	  DPrintf(dPersist, "S%d Load State T:%d VF:%d Log:%v", rf.me, rf.currentTerm, rf.votedFor, rf.log)
+	  DPrintf(dPersist, "S%d Load State T:%d VF:%d First-Log:%v Last-Log:%v", rf.me, rf.currentTerm, rf.votedFor, rf.log[0], rf.log[len(rf.log)-1])
 	}
 }
 
@@ -200,11 +200,9 @@ func (rf *Raft) ticker() {
 		select {
 		case <- rf.electionTimer.C:
 			rf.mu.Lock()
-			if rf.state != StateLeader {
-				DPrintf(dTimer, "S%d Not Leader, checking election timeout", rf.me)
-				rf.StartElection()
-				rf.electionTimer.Reset(RandomElectionTimeout())
-			}
+			DPrintf(dTimer, "S%d Not Leader, checking election timeout", rf.me)
+			rf.StartElection()
+			rf.electionTimer.Reset(RandomElectionTimeout())                    
 			rf.mu.Unlock()
 		case <- rf.heartbeatTimer.C:
 			rf.mu.Lock()
@@ -239,7 +237,12 @@ func (rf *Raft) applier() {
 		}
 		rf.mu.Lock()
 		rf.lastApplied = Max(rf.lastApplied, commitIndex)
-		DPrintf(dCommit, "S%d Nothing left to apply, await (LA:%d = CI:%d), entries %v", rf.me, rf.lastApplied, rf.commitIndex, entries);
+		if len(entries) > 0 {
+			DPrintf(dCommit, "S%d Nothing left to apply, await (LA:%d = CI:%d), first-entry %v, last-entry %v", rf.me, rf.lastApplied, rf.commitIndex, entries[0], entries[len(entries)-1]);
+		} else {
+			DPrintf(dCommit, "S%d Nothing left to apply, await (LA:%d = CI:%d), no entry", rf.me, rf.lastApplied, rf.commitIndex);
+		}
+		
 		rf.mu.Unlock()
 	}
 }
@@ -411,8 +414,8 @@ func (rf *Raft) replicateEntries(peer int) {
 			LastIncludedTerm:	rf.getFirstLog().Term,
 			Data:				rf.persister.ReadSnapshot(),
 		}
-		DPrintf(dLog, "S%d -> S%d Sending Install Snapshot Old LII:%d PLI:%d LII:%d LIT:%d - Data [%v]", rf.me, peer, rf.getFirstLog().Index,
-			prevLogIndex, args.LastIncludedIndex, args.LastIncludedTerm, args.Data)
+		DPrintf(dLog, "S%d -> S%d Sending Install Snapshot Old LII:%d PLI:%d LII:%d LIT:%d", rf.me, peer, rf.getFirstLog().Index,
+			prevLogIndex, args.LastIncludedIndex, args.LastIncludedTerm)
 		reply := InstallSnapshotReply{}
 		rf.mu.RUnlock()
 		if rf.sendInstallSnapshot(peer, &args, &reply) {
@@ -434,8 +437,13 @@ func (rf *Raft) replicateEntries(peer int) {
 			LeaderCommit : rf.commitIndex,
 			Entries	: rf.log[prevLogIndex - firstIndex + 1: ],
 		}
-		DPrintf(dLog, "S%d -> S%d Sending PLI:%d PLT:%d T:%d LC:%d - [%v]", rf.me, peer, 
-			args.PrevLogIndex, args.PrevLogTerm, args.Term, args.LeaderCommit, args.Entries)
+		if len(args.Entries) > 0 {
+			DPrintf(dLog, "S%d -> S%d Sending PLI:%d PLT:%d T:%d LC:%d First-Entry:%v Last-Entry:%v", rf.me, peer, 
+				args.PrevLogIndex, args.PrevLogTerm, args.Term, args.LeaderCommit, args.Entries[0], args.Entries[len(args.Entries)-1])
+		} else {
+			DPrintf(dLog, "S%d -> S%d Sending PLI:%d PLT:%d T:%d LC:%d No-Entry", rf.me, peer, 
+				args.PrevLogIndex, args.PrevLogTerm, args.Term, args.LeaderCommit)
+		}
 		reply := AppendEntriesReply{}
 		rf.mu.RUnlock()
 		if rf.sendAppendEntries(peer, &args, &reply) {
@@ -563,7 +571,7 @@ func (rf *Raft) AppendEntries(args *AppendEntriesArgs, reply *AppendEntriesReply
 	for index, entry := range args.Entries {
 		if entry.Index - firstIndex >= len(rf.log) || rf.log[entry.Index - firstIndex].Term != entry.Term {
 			rf.log = shrinkEntriesArray(append(rf.log[:entry.Index - firstIndex], args.Entries[index:]...))
-			DPrintf(dLog2, "S%d Save Log %v, Log Entries %v", rf.me, args.Entries[index:], rf.log)
+			DPrintf(dLog2, "S%d Save First-Log %v, Last-Log %v, All-First-Log %v", rf.me, args.Entries[index], args.Entries[len(args.Entries) - 1], rf.log[0])
 			break;
 		}
 	}
@@ -673,7 +681,7 @@ func (rf *Raft) InstallSnapshot(args *InstallSnapshotArgs, reply *InstallSnapsho
 func (rf *Raft) CondInstallSnapshot(lastIncludedTerm int, lastIncludedIndex int, snapshot []byte) bool {
 	rf.mu.Lock()
 	defer rf.mu.Unlock()
-	DPrintf(dPersist, "S%d Cond Install Snapshot LII:%d, LIT:%d, Snapshot: %v", rf.me, lastIncludedIndex, lastIncludedIndex, snapshot)
+	DPrintf(dPersist, "S%d Cond Install Snapshot LII:%d, LIT:%d", rf.me, lastIncludedIndex, lastIncludedIndex)
 
 	if lastIncludedIndex <= rf.commitIndex {
 		DPrintf(dPersist, "S%d Reject Snapshot LII:%d, Commit Index is Bigger CI:%d", rf.me, lastIncludedIndex, rf.commitIndex)
@@ -852,7 +860,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.log = make([]Entry, 1)
 
 	// initialize from state persisted before a crash
-	DPrintf(dClient, "S%d Started at T:%d VF:%d Log:%v", rf.me, rf.currentTerm, rf.votedFor, rf.log)
+	DPrintf(dClient, "S%d Started at T:%d VF:%d", rf.me, rf.currentTerm, rf.votedFor)
 	rf.readPersist(persister.ReadRaftState())
 	DPrintf(dClient, "S%d Started at T:%d LLI:%d", rf.me, rf.currentTerm, rf.getLastLog().Index)
 	
