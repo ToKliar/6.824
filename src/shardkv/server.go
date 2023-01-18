@@ -5,35 +5,175 @@ import "6.824/labrpc"
 import "6.824/raft"
 import "sync"
 import "6.824/labgob"
+import "sync/atomic"
+import "time"
+import "fmt"
+import "bytes"
 
-
-
-type Op struct {
-	// Your definitions here.
-	// Field names must start with capital letters,
-	// otherwise RPC will break.
-}
 
 type ShardKV struct {
-	mu           sync.Mutex
+	mu           sync.RWMutex
 	me           int
 	rf           *raft.Raft
 	applyCh      chan raft.ApplyMsg
 	make_end     func(string) *labrpc.ClientEnd
 	gid          int
 	ctrlers      []*labrpc.ClientEnd
-	maxraftstate int // snapshot if log grows this big
+	maxRaftState int // snapshot if log grows this big
+	dead		 int32
 
-	// Your definitions here.
+	lastApplied	 int
+
+	stateMachine 	MemoryKV
+	notifyChans		map[int]chan *CommandReply
+	lastOperation	map[int64]OpContext
 }
 
-
-func (kv *ShardKV) Get(args *GetArgs, reply *GetReply) {
-	// Your code here.
+type OpContext struct {
+	PrevCommandId	int
+	Result			*CommandReply
 }
 
-func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
-	// Your code here.
+func (kv *ShardKV) isDuplicateCommand(clientId int64, commandId int) bool {
+	if value, ok := kv.lastOperation[clientId]; ok {
+		if value.PrevCommandId >= commandId {
+			return true
+		}
+	}
+	return false
+}
+
+func (kv *ShardKV) Command(args *CommandArgs, reply *CommandReply) {
+	kv.mu.RLock()
+	if args.Op != OpGet && kv.isDuplicateCommand(args.ClientId, args.CommandId) {
+		prevResult := kv.lastOperation[args.ClientId].Result
+		reply.Value, reply.Err = prevResult.Value, prevResult.Err
+		kv.mu.RUnlock()
+		return
+	}
+	kv.mu.RUnlock()
+	
+	index, _, isLeader := kv.rf.Start(*args)
+	if !isLeader {
+		reply.Err = ErrWrongLeader
+		return 
+	}
+	
+	kv.mu.Lock()
+	ch, ok := kv.notifyChans[index]
+	if !ok {
+		kv.notifyChans[index] = make(chan *CommandReply, 1)
+		ch = kv.notifyChans[index]
+	}
+	kv.mu.Unlock()
+	select {
+	case result := <-ch:
+		reply.Value, reply.Err = result.Value, result.Err
+	case <-time.After(time.Second * 2):
+		reply.Err = ErrWrongLeader
+	}
+
+	go func() {
+		kv.mu.Lock()
+		if reply.Err == OK {
+			close(kv.notifyChans[index])
+			delete(kv.notifyChans, index)
+		}
+		kv.mu.Unlock()
+	}()
+}
+
+func (kv *ShardKV) needSnapshot() bool {
+	if kv.maxRaftState == -1 {
+		return false
+	}
+	return kv.rf.GetRaftStateSize() >= kv.maxRaftState
+}
+
+func (kv *ShardKV) takeSnapshot(commandIndex int) {
+	w := new(bytes.Buffer)
+	e := labgob.NewEncoder(w)
+	e.Encode(kv.lastApplied)
+	e.Encode(kv.stateMachine.KV)
+	e.Encode(kv.lastOperation)
+	kv.rf.ReplaceLogSnapshot(commandIndex, w.Bytes())
+}
+
+func (kv *ShardKV) restoreSnapshot(snapshot []byte) {
+	r := bytes.NewBuffer(snapshot)
+	d := labgob.NewDecoder(r)
+	var lastApplied int
+	var kvStore map[string]string
+	var lastOperation map[int64]OpContext
+	if d.Decode(&lastApplied) == nil && d.Decode(&kvStore) == nil && d.Decode(&lastOperation) == nil {
+		kv.lastApplied = lastApplied
+		kv.lastOperation = lastOperation
+		kv.stateMachine = MemoryKV{kvStore}
+	} 
+}
+
+func (kv *ShardKV) applier() {
+	for kv.killed() == false {
+		select {
+		case message := <-kv.applyCh:
+			if message.CommandValid {
+				kv.mu.Lock()
+				if message.CommandIndex <= kv.lastApplied {
+					kv.mu.Unlock()
+					continue
+				}
+				kv.lastApplied = message.CommandIndex
+
+				var reply *CommandReply
+				command := message.Command.(CommandArgs)
+				if command.Op != OpGet && kv.isDuplicateCommand(command.ClientId, command.CommandId) {
+					reply = kv.lastOperation[command.ClientId].Result
+				} else {
+					reply = kv.applyLogToStateMachine(command) 
+					if command.Op != OpGet {
+						kv.lastOperation[command.ClientId] = OpContext { command.CommandId, reply}
+					}
+				}
+				
+				currentTerm, isLeader := kv.rf.GetState()
+				if isLeader && message.CommandTerm == currentTerm {
+					ch, ok := kv.notifyChans[message.CommandIndex]
+					if !ok {
+						kv.notifyChans[message.CommandIndex] = make(chan *CommandReply, 1)
+						ch = kv.notifyChans[message.CommandIndex]
+					}
+					ch <- reply
+				}
+
+				needSnapshot := kv.needSnapshot()
+				if needSnapshot {
+					kv.takeSnapshot(message.CommandIndex)
+				}
+				kv.mu.Unlock()
+			} else if message.SnapshotValid {
+				kv.mu.Lock()
+				if kv.rf.CondInstallSnapshot(message.SnapshotTerm, message.SnapshotIndex, message.Snapshot) {
+					kv.restoreSnapshot(message.Snapshot)
+					kv.lastApplied = message.SnapshotIndex
+				}
+				kv.mu.Unlock()
+			} else {
+				panic(fmt.Sprintf("unexpected message: %v", message))
+			}
+		}
+	}
+}
+
+func (kv *ShardKV) applyLogToStateMachine(command CommandArgs) *CommandReply{
+	reply := new(CommandReply)
+	if command.Op == OpGet {
+		reply.Value, reply.Err = kv.stateMachine.Get(command.Key)
+	} else if command.Op == OpAppend {
+		reply.Err = kv.stateMachine.Append(command.Key, command.Value)
+	} else if command.Op == OpPut {
+		reply.Err = kv.stateMachine.Put(command.Key, command.Value)
+	}
+	return reply
 }
 
 //
@@ -43,10 +183,15 @@ func (kv *ShardKV) PutAppend(args *PutAppendArgs, reply *PutAppendReply) {
 // turn off debug output from this instance.
 //
 func (kv *ShardKV) Kill() {
+	atomic.StoreInt32(&kv.dead, 1)
 	kv.rf.Kill()
 	// Your code here, if desired.
 }
 
+func (kv *ShardKV) killed() bool {
+	z := atomic.LoadInt32(&kv.dead)
+	return z == 1
+}
 
 //
 // servers[] contains the ports of the servers in this group.
@@ -79,11 +224,11 @@ func (kv *ShardKV) Kill() {
 func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister, maxraftstate int, gid int, ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.ClientEnd) *ShardKV {
 	// call labgob.Register on structures you want
 	// Go's RPC library to marshall/unmarshall.
-	labgob.Register(Op{})
+	labgob.Register(CommandArgs{})
 
 	kv := new(ShardKV)
 	kv.me = me
-	kv.maxraftstate = maxraftstate
+	kv.maxRaftState = maxraftstate
 	kv.make_end = make_end
 	kv.gid = gid
 	kv.ctrlers = ctrlers
@@ -96,6 +241,14 @@ func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister,
 	kv.applyCh = make(chan raft.ApplyMsg)
 	kv.rf = raft.Make(servers, me, persister, kv.applyCh)
 
+	kv.lastApplied = 0
+	kv.stateMachine = *NewMemoryKV()
+	kv.notifyChans = make(map[int]chan *CommandReply)
+	kv.lastOperation = make(map[int64]OpContext)
 
+	snapshot := persister.ReadSnapshot()
+	kv.restoreSnapshot(snapshot)
+
+	go kv.applier()
 	return kv
 }

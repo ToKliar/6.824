@@ -16,6 +16,14 @@ const (
 	ErrWrongLeader = "ErrWrongLeader"
 )
 
+type Operation int 
+
+const (
+	OpGet Operation	= iota	
+	OpPut		
+	OpAppend	
+)
+
 type Err string
 
 // Put or Append
@@ -41,4 +49,17 @@ type GetArgs struct {
 type GetReply struct {
 	Err   Err
 	Value string
+}
+
+type CommandArgs struct {
+	Key 		string
+	Value 		string
+	Op 			Operation
+	CommandId 	int
+	ClientId	int64
+}
+
+type CommandReply struct {
+	Err		Err
+	Value	string	
 }
