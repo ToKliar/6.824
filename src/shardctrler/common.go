@@ -60,3 +60,8 @@ type CommandReply struct {
 	Config		Config
 }
 
+func DefaultConfig() Config {
+	config := Config {}
+	config.Groups = make(map[int][]string)
+	return config
+}

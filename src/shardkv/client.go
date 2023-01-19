@@ -41,7 +41,7 @@ type Clerk struct {
 	make_end func(string) *labrpc.ClientEnd
 	// You will have to modify this struct.
 	clientId int64
-	leaderId int
+	leaderIds 	map[int]int
 	commandId	int
 }
 
@@ -62,9 +62,37 @@ func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.Client
 	ck.config = ck.sm.Query(-1)
 	ck.clientId = nrand()
 	ck.commandId = 0
-	ck.leaderId = 0
+	ck.leaderIds = make(map[int]int)
 	return ck
 }
+
+// func (ck *Clerk) Command(args *CommandArgs) string {
+// 	args.ClientId, args.CommandId = ck.clientId, ck.commandId
+// 	for {
+// 		shard := key2shard(args.Key)
+// 		gid := ck.config.Shards[shard]
+// 		if servers, ok := ck.config.Groups[gid]; ok {
+// 			for i := 0; i < len(servers); i++ {
+// 				si := (i + ck.leaderId) % len(servers)
+// 				srv := ck.make_end(servers[si])
+// 				var reply CommandReply
+// 				ok := srv.Call("ShardKV.Command", args, &reply)
+// 				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
+// 					ck.leaderId = i
+// 					ck.commandId++
+// 					return reply.Value
+// 				}
+// 				if ok && reply.Err == ErrWrongGroup {
+// 					break
+// 				}
+
+// 				// ... not ok, or ErrWrongLeader
+// 			}
+// 		}
+// 		time.Sleep(100 * time.Millisecond)
+// 		ck.config = ck.sm.Query(-1)
+// 	}
+// }
 
 func (ck *Clerk) Command(args *CommandArgs) string {
 	args.ClientId, args.CommandId = ck.clientId, ck.commandId
@@ -72,24 +100,30 @@ func (ck *Clerk) Command(args *CommandArgs) string {
 		shard := key2shard(args.Key)
 		gid := ck.config.Shards[shard]
 		if servers, ok := ck.config.Groups[gid]; ok {
-			for i := 0; i < len(servers); i++ {
-				si := (i + ck.leaderId) % len(servers)
-				srv := ck.make_end(servers[si])
+			if _, ok = ck.leaderIds[gid]; !ok {
+				ck.leaderIds[gid] = 0
+			}
+			oldLeaderId := ck.leaderIds[gid]
+			newLeaderId := oldLeaderId
+			for {
 				var reply CommandReply
-				ok := srv.Call("ShardKV.Command", args, &reply)
+				ok := ck.make_end(servers[newLeaderId]).Call("ShardKV.Command", args, &reply)
 				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
-					ck.leaderId = i
 					ck.commandId++
 					return reply.Value
-				}
-				if ok && reply.Err == ErrWrongGroup {
+				} else if ok && reply.Err == ErrWrongGroup {
 					break
+				} else {
+					newLeaderId = (newLeaderId + 1) % len(servers)
+					if newLeaderId == oldLeaderId {
+						break
+					}
+					continue
 				}
-
-				// ... not ok, or ErrWrongLeader
 			}
 		}
 		time.Sleep(100 * time.Millisecond)
+		// 获取最新配置
 		ck.config = ck.sm.Query(-1)
 	}
 }

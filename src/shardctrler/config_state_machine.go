@@ -15,6 +15,7 @@ func NewMemoryConfig() *MemoryConfig {
 	return mc
 }
 
+
 func (mc *MemoryConfig) Query(num int) (Config, Err) {
 	if num < 0 || num >= len(mc.Configs) {
 		return mc.Configs[len(mc.Configs) - 1], OK

@@ -119,6 +119,17 @@ func (rf *Raft) appendNewEntry(command interface{}) Entry {
 	return entry
 }
 
+func (rf *Raft) HasLogInCurrentTerm() bool {
+	rf.mu.RLock()
+	defer rf.mu.RUnlock()
+	for index := len(rf.log) - 1; index >= 0; index-- {
+		if rf.log[index].Term <= rf.currentTerm {
+			return rf.log[index].Term == rf.currentTerm
+		} 
+	}
+	return false
+}
+
 // 对新的定义
 // 如果两份日志最后条目的任期不同，任期号大的日志新
 // 如果两份日志最后条目的任期相同，日志比较长的那个更新
@@ -732,41 +743,6 @@ func (rf *Raft) ReplaceLogSnapshot(lastIncludedIndex int, snapshot []byte) {
 	// 	go rf.syncSnapshotWith(i, lastIncludedIndex)
 	// }
 	DPrintf(dPersist, "S%d After Snapshot State:%d, Term:%d, CI:%d, LA:%d, FirstLog:%v, LastLog:%v, LII:%d", rf.me, rf.state, rf.currentTerm, rf.commitIndex, rf.lastApplied, rf.getFirstLog(), rf.getLastLog(), lastIncludedIndex)
-}
-
-func (rf *Raft) syncSnapshotWith(server int, snapshotIndex int) {
-    rf.mu.Lock()
-    if rf.state != StateLeader {
-        rf.mu.Unlock()
-        return
-    }
-    args := InstallSnapshotArgs{
-        Term:              rf.currentTerm,
-        LeaderId:          rf.me,
-        LastIncludedIndex: snapshotIndex,
-        LastIncludedTerm:  rf.log[0].Term,
-        Data:              rf.persister.ReadSnapshot(),
-    }
-    rf.mu.Unlock()
-
-    var reply InstallSnapshotReply
-
-    if rf.sendInstallSnapshot(server, &args, &reply) {
-        rf.mu.Lock()
-        if reply.Term > rf.currentTerm {
-            rf.currentTerm = reply.Term
-			rf.votedFor = -1
-			rf.state = StateFollower
-			rf.electionTimer.Reset(RandomElectionTimeout())
-            rf.persist()
-        } else {
-            if rf.matchIndex[server] < args.LastIncludedIndex {
-                rf.matchIndex[server] = args.LastIncludedIndex
-            }
-            rf.nextIndex[server] = rf.matchIndex[server] + 1
-        }
-        rf.mu.Unlock()
-    }
 }
 
 // the service says it has created a snapshot that has

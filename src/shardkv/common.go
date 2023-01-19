@@ -1,5 +1,7 @@
 package shardkv
 
+import "time"
+
 //
 // Sharded key/value server.
 // Lots of replica groups, each running Raft.
@@ -9,17 +11,25 @@ package shardkv
 // You will have to modify these definitions.
 //
 
+const ConfigureMonitorTimeout = 50 * time.Millisecond
+const MigrationMonitorTimeout = 80 * time.Millisecond
+const GCMonitorTimeout = 100 * time.Millisecond
+const EmptyEntryMonitorTimeout = 100 * time.Millisecond
+
 const (
-	OK             = "OK"
-	ErrNoKey       = "ErrNoKey"
-	ErrWrongGroup  = "ErrWrongGroup"
-	ErrWrongLeader = "ErrWrongLeader"
+	OK             	= "OK"
+	ErrNoKey       	= "ErrNoKey"
+	ErrWrongGroup  	= "ErrWrongGroup"
+	ErrWrongLeader 	= "ErrWrongLeader"
+	ErrOutDated	   	= "ErrOutDated"
+	ErrNotReady	   	= "ErrNotReady"
+	ErrTimeout 		= "ErrTimeout"
 )
 
-type Operation int 
+type OperationType int 
 
 const (
-	OpGet Operation	= iota	
+	OpGet OperationType	= iota	
 	OpPut		
 	OpAppend	
 )
@@ -54,7 +64,7 @@ type GetReply struct {
 type CommandArgs struct {
 	Key 		string
 	Value 		string
-	Op 			Operation
+	Op 			OperationType
 	CommandId 	int
 	ClientId	int64
 }
@@ -62,4 +72,16 @@ type CommandArgs struct {
 type CommandReply struct {
 	Err		Err
 	Value	string	
+}
+
+type ShardOperationArgs struct {
+	ConfigNum	int
+	ShardIDs	[]int	
+}
+
+type ShardOperationReply struct {
+	Err				Err
+	Shards			map[int]map[string]string
+	LastOperation	map[int64]OpContext
+	ConfigNum		int
 }
