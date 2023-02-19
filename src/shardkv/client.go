@@ -8,11 +8,14 @@ package shardkv
 // talks to the group that holds the key's shard.
 //
 
-import "6.824/labrpc"
-import "crypto/rand"
-import "math/big"
-import "6.824/shardctrler"
-import "time"
+import (
+	"crypto/rand"
+	"math/big"
+	"time"
+
+	"6.824/labrpc"
+	"6.824/shardctrler"
+)
 
 //
 // which shard is a key in?
@@ -40,9 +43,9 @@ type Clerk struct {
 	config   shardctrler.Config
 	make_end func(string) *labrpc.ClientEnd
 	// You will have to modify this struct.
-	clientId int64
-	leaderIds 	map[int]int
-	commandId	int
+	clientId  int64
+	leaderIds map[int]int
+	commandId int
 }
 
 //
@@ -58,7 +61,6 @@ func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.Client
 	ck := new(Clerk)
 	ck.sm = shardctrler.MakeClerk(ctrlers)
 	ck.make_end = make_end
-	// You'll have to add code here.
 	ck.config = ck.sm.Query(-1)
 	ck.clientId = nrand()
 	ck.commandId = 0
@@ -66,55 +68,33 @@ func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.Client
 	return ck
 }
 
-// func (ck *Clerk) Command(args *CommandArgs) string {
-// 	args.ClientId, args.CommandId = ck.clientId, ck.commandId
-// 	for {
-// 		shard := key2shard(args.Key)
-// 		gid := ck.config.Shards[shard]
-// 		if servers, ok := ck.config.Groups[gid]; ok {
-// 			for i := 0; i < len(servers); i++ {
-// 				si := (i + ck.leaderId) % len(servers)
-// 				srv := ck.make_end(servers[si])
-// 				var reply CommandReply
-// 				ok := srv.Call("ShardKV.Command", args, &reply)
-// 				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
-// 					ck.leaderId = i
-// 					ck.commandId++
-// 					return reply.Value
-// 				}
-// 				if ok && reply.Err == ErrWrongGroup {
-// 					break
-// 				}
-
-// 				// ... not ok, or ErrWrongLeader
-// 			}
-// 		}
-// 		time.Sleep(100 * time.Millisecond)
-// 		ck.config = ck.sm.Query(-1)
-// 	}
-// }
-
 func (ck *Clerk) Command(args *CommandArgs) string {
 	args.ClientId, args.CommandId = ck.clientId, ck.commandId
+	DPrintf("{Clerk %v} Send Command %v", ck.clientId, args)
 	for {
 		shard := key2shard(args.Key)
 		gid := ck.config.Shards[shard]
+		DPrintf("{Clerk %v} Current Config:%v Shard:%d Gid:%d", ck.clientId, ck.config, shard, gid)
 		if servers, ok := ck.config.Groups[gid]; ok {
 			if _, ok = ck.leaderIds[gid]; !ok {
 				ck.leaderIds[gid] = 0
 			}
 			oldLeaderId := ck.leaderIds[gid]
 			newLeaderId := oldLeaderId
+			DPrintf("{Clerk %v} Leader: %d", ck.clientId, newLeaderId)
 			for {
 				var reply CommandReply
 				ok := ck.make_end(servers[newLeaderId]).Call("ShardKV.Command", args, &reply)
+				DPrintf("{Clerk %v} Send Command %v To Node %d Group %d With reply %v", ck.clientId, args, newLeaderId, gid, reply)
 				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
 					ck.commandId++
+					ck.leaderIds[gid] = newLeaderId
 					return reply.Value
 				} else if ok && reply.Err == ErrWrongGroup {
 					break
 				} else {
 					newLeaderId = (newLeaderId + 1) % len(servers)
+					DPrintf("{Clerk %v} New Leader: %d Old Leader: %d", ck.clientId, newLeaderId, oldLeaderId)
 					if newLeaderId == oldLeaderId {
 						break
 					}

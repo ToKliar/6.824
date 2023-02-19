@@ -1,45 +1,88 @@
 package shardkv
 
+import (
+	"bytes"
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"sync"
+	"sync/atomic"
+	"time"
 
-import "6.824/labrpc"
-import "6.824/raft"
-import "sync"
-import "6.824/labgob"
-import "sync/atomic"
-import "time"
-import "fmt"
-import "bytes"
-import "6.824/shardctrler"
+	"6.824/labgob"
+	"6.824/labrpc"
+	"6.824/raft"
+	"6.824/shardctrler"
+)
 
+var Debug bool
+
+func init() {
+	verbosity := getVerbosity()
+	if verbosity == 3 {
+		Debug = true
+	} else {
+		Debug = false
+	}
+}
+
+func getVerbosity() int {
+	v := os.Getenv("VERBOSE")
+	level := 0
+	if v != "" {
+		var err error
+		level, err = strconv.Atoi(v)
+		if err != nil {
+			log.Fatalf("Invalid verbosity %v", v)
+		}
+	}
+	return level
+}
+
+func DPrintf(format string, a ...interface{}) (n int, err error) {
+	if Debug {
+		log.Printf(format, a...)
+	}
+	return
+}
 
 type ShardKV struct {
-	mu           sync.RWMutex
-	me           int
-	rf           *raft.Raft
-	applyCh      chan raft.ApplyMsg
-	make_end     func(string) *labrpc.ClientEnd
-	gid          int
-	sc  		 *shardctrler.Clerk
-	
-	maxRaftState int // snapshot if log grows this big
-	dead		 int32
-	lastApplied	 int
+	mu       sync.RWMutex
+	me       int
+	rf       *raft.Raft
+	applyCh  chan raft.ApplyMsg
+	make_end func(string) *labrpc.ClientEnd
+	gid      int
+	sc       *shardctrler.Clerk
 
-	lastConfig		shardctrler.Config
-	currentConfig	shardctrler.Config
-	stateMachine 	map[int]*Shard
-	notifyChans		map[int]chan *CommandReply
-	lastOperation	map[int64]OpContext
+	maxRaftState int // snapshot if log grows this big
+	dead         int32
+	lastApplied  int
+
+	lastConfig    shardctrler.Config
+	currentConfig shardctrler.Config
+	stateMachine  map[int]*Shard
+	notifyChans   map[int]chan *CommandReply
+	lastOperation map[int64]OpContext
 }
 
 type OpContext struct {
-	PrevCommandId	int
-	Result			*CommandReply
+	PrevCommandId int
+	Result        *CommandReply
 }
 
 func (oc *OpContext) deepCopy() OpContext {
 	result := &CommandReply{oc.Result.Err, oc.Result.Value}
 	return OpContext{oc.PrevCommandId, result}
+}
+
+func (kv *ShardKV) getShardStatus() map[int]string {
+	shardStatus := make(map[int]string)
+	for shardID, shard := range kv.stateMachine {
+		shardStatus[shardID] = fmt.Sprintf("%v", shard.Status)
+	}
+	return shardStatus
 }
 
 func (kv *ShardKV) isDuplicateCommand(clientId int64, commandId int) bool {
@@ -52,36 +95,18 @@ func (kv *ShardKV) isDuplicateCommand(clientId int64, commandId int) bool {
 }
 
 func (kv *ShardKV) canServe(shardID int) bool {
+	DPrintf("{Node %v}{Group %v} current config num: %d shardID: %d gid: %d", kv.me, kv.gid, kv.currentConfig.Num, shardID, kv.currentConfig.Shards[shardID])
 	return kv.currentConfig.Shards[shardID] == kv.gid && (kv.stateMachine[shardID].Status == Serving || kv.stateMachine[shardID].Status == GCing)
 }
 
-func (kv *ShardKV) Command(args *CommandArgs, reply *CommandReply) {
-	kv.mu.RLock()
-	if args.Op != OpGet && kv.isDuplicateCommand(args.ClientId, args.CommandId) {
-		prevResult := kv.lastOperation[args.ClientId].Result
-		reply.Value, reply.Err = prevResult.Value, prevResult.Err
-		kv.mu.RUnlock()
-		return
-	}
-
-	if !kv.canServe(key2shard(args.Key)) {
-		reply.Err = ErrWrongGroup
-		kv.mu.RUnlock()
-		return
-	}
-
-	kv.mu.RUnlock()
-
-	kv.Execute(NewOperationCommand(args), reply)
-}
-
 func (kv *ShardKV) Execute(command Command, reply *CommandReply) {
+	defer DPrintf("{Node %v}{Group %v} processes Command %v with Reply %v", kv.me, kv.gid, command, reply)
 	index, _, isLeader := kv.rf.Start(command)
 	if !isLeader {
 		reply.Err = ErrWrongLeader
-		return 
+		return
 	}
-	
+
 	kv.mu.Lock()
 	ch, ok := kv.notifyChans[index]
 	if !ok {
@@ -134,13 +159,13 @@ func (kv *ShardKV) restoreSnapshot(snapshot []byte) {
 	var currentConfig shardctrler.Config
 	if d.Decode(&lastApplied) != nil {
 		return
-	} 
+	}
 	if d.Decode(&stateMachine) != nil {
 		return
-	} 
+	}
 	if d.Decode(&lastOperation) != nil {
-		return		
-	} 
+		return
+	}
 	if d.Decode(&lastConfig) != nil {
 		return
 	}
@@ -159,9 +184,11 @@ func (kv *ShardKV) applier() {
 	for kv.killed() == false {
 		select {
 		case message := <-kv.applyCh:
+			DPrintf("{Node %v}{Group %v} tries to apply message %v", kv.me, kv.gid, message)
 			if message.CommandValid {
 				kv.mu.Lock()
 				if message.CommandIndex <= kv.lastApplied {
+					DPrintf("{Node %v}{Group %v} discards outdated message %v because a newer snapshot which lastApplied is %v has been restored", kv.me, kv.gid, message, kv.lastApplied)
 					kv.mu.Unlock()
 					continue
 				}
@@ -184,13 +211,15 @@ func (kv *ShardKV) applier() {
 					shardsInfo := command.Data.(ShardOperationArgs)
 					reply = kv.applyDeleteShards(&shardsInfo)
 				case EmptyEntry:
+					DPrintf("{Node %v}{Group %v} tries to apply empty entry", kv.me, kv.gid)
 					reply = kv.applyEmptyEntry()
 				}
-				
-				
+
 				currentTerm, isLeader := kv.rf.GetState()
+				DPrintf("{Node %v}{Group %v} raft currentTerm: %v, isLeader: %v", kv.me, kv.gid, currentTerm, isLeader)
 				if isLeader && message.CommandTerm == currentTerm {
 					ch, ok := kv.notifyChans[message.CommandIndex]
+					DPrintf("{Node %v}{Group %v} have channel for empty entry %v", kv.me, kv.gid, ok)
 					if !ok {
 						kv.notifyChans[message.CommandIndex] = make(chan *CommandReply, 1)
 						ch = kv.notifyChans[message.CommandIndex]
@@ -217,16 +246,41 @@ func (kv *ShardKV) applier() {
 	}
 }
 
+func (kv *ShardKV) Command(args *CommandArgs, reply *CommandReply) {
+	kv.mu.RLock()
+	DPrintf("{Node %v}{Group %v} processes Command Operation %v", kv.me, kv.gid, args)
+	if args.Op != OpGet && kv.isDuplicateCommand(args.ClientId, args.CommandId) {
+		prevResult := kv.lastOperation[args.ClientId].Result
+		reply.Value, reply.Err = prevResult.Value, prevResult.Err
+		DPrintf("{Node %v}{Group %v} processes old Command Operation %v with reply %v", kv.me, kv.gid, args, reply)
+		kv.mu.RUnlock()
+		return
+	}
+
+	if !kv.canServe(key2shard(args.Key)) {
+		reply.Err = ErrWrongGroup
+		DPrintf("{Node %v}{Group %v} processes Wrong Group Command Operation %v with reply %v", kv.me, kv.gid, args, reply)
+		kv.mu.RUnlock()
+		return
+	}
+
+	kv.mu.RUnlock()
+
+	kv.Execute(NewOperationCommand(args), reply)
+}
+
 func (kv *ShardKV) applyOperation(message *raft.ApplyMsg, operation *CommandArgs) *CommandReply {
 	var reply *CommandReply
 	shardID := key2shard(operation.Key)
+	DPrintf("{Node %v}{Group %v} apply message %v to stateMachine with shardID %d", kv.me, kv.gid, message, shardID)
 	if kv.canServe(shardID) {
 		if operation.Op != OpGet && kv.isDuplicateCommand(operation.ClientId, operation.CommandId) {
+			DPrintf("{Node %v}{Group %v} doesn't apply duplicated message %v to stateMachine because maxAppliedCommandId is %v for client %v", kv.me, kv.gid, message, kv.lastOperation[operation.ClientId], operation.ClientId)
 			return kv.lastOperation[operation.ClientId].Result
 		} else {
-			reply = kv.applyLogToStateMachine(operation, shardID) 
+			reply = kv.applyLogToStateMachine(operation, shardID)
 			if operation.Op != OpGet {
-				kv.lastOperation[operation.ClientId] = OpContext { operation.CommandId, reply}
+				kv.lastOperation[operation.ClientId] = OpContext{operation.CommandId, reply}
 			}
 			return reply
 		}
@@ -234,39 +288,35 @@ func (kv *ShardKV) applyOperation(message *raft.ApplyMsg, operation *CommandArgs
 	return &CommandReply{ErrWrongGroup, ""}
 }
 
-func (kv *ShardKV) applyLogToStateMachine(operation *CommandArgs, shardID int) *CommandReply{
+func (kv *ShardKV) applyLogToStateMachine(operation *CommandArgs, shardID int) *CommandReply {
 	reply := new(CommandReply)
-	shard, ok := kv.stateMachine[shardID]
-	if !ok {
-		reply.Err = ErrWrongLeader
-	} else {
-		switch operation.Op {
-		case OpGet:
-			reply.Value, reply.Err = shard.Get(operation.Key)
-		case OpAppend:
-			reply.Err = shard.Append(operation.Key, operation.Value)
-		case OpPut:
-			reply.Err = shard.Put(operation.Key, operation.Value)
-		}
-	} 
+	shard := kv.stateMachine[shardID]
+	switch operation.Op {
+	case OpGet:
+		reply.Value, reply.Err = shard.Get(operation.Key)
+	case OpAppend:
+		reply.Err = shard.Append(operation.Key, operation.Value)
+	case OpPut:
+		reply.Err = shard.Put(operation.Key, operation.Value)
+	}
 	return reply
 }
 
-func (kv *ShardKV) updateShardStatus (nextConfig *shardctrler.Config) {
-	for shardID, shard := range kv.stateMachine {
-		if nextConfig.Shards[shardID] != kv.gid {
-			shard.Status = BePulling
-		}
-	}
-
+func (kv *ShardKV) updateShardStatus(nextConfig *shardctrler.Config) {
+	DPrintf("{Node %v}{Group %v} current shards: %v, next shard: %v", kv.me, kv.gid, kv.currentConfig.Shards, nextConfig.Shards)
 	for shardID, gid := range nextConfig.Shards {
-		if gid == kv.gid {
+		if kv.currentConfig.Shards[shardID] == kv.gid && gid != kv.gid {
+			kv.stateMachine[shardID].Status = BePulling
+		} else if gid == kv.gid && kv.currentConfig.Shards[shardID] != kv.gid {
 			if _, ok := kv.stateMachine[shardID]; !ok {
 				kv.stateMachine[shardID] = NewShard()
 			}
-			kv.stateMachine[shardID].Status = Pulling
+			if kv.currentConfig.Shards[shardID] != 0 {
+				kv.stateMachine[shardID].Status = Pulling
+			}
 		}
 	}
+	DPrintf("{Node %v}{Group %v} shard status %v", kv.me, kv.gid, kv.getShardStatus())
 }
 
 func (kv *ShardKV) configureAction() {
@@ -280,22 +330,28 @@ func (kv *ShardKV) configureAction() {
 	}
 	currentConfigNum := kv.currentConfig.Num
 	kv.mu.RLock()
+	DPrintf("{Node %v}{Group %v} currentConfigNum is %v, canFetchNextConfig %v", kv.me, kv.gid, currentConfigNum, canPerformNextConfig)
 
 	if canPerformNextConfig {
 		nextConfig := kv.sc.Query(currentConfigNum + 1)
-		if nextConfig.Num == currentConfigNum + 1 {
+		if nextConfig.Num == currentConfigNum+1 {
+			DPrintf("{Node %v}{Group %v} fetches latest configuration %v when currentConfigNum is %v", kv.me, kv.gid, nextConfig, currentConfigNum)
 			kv.Execute(NewConfigurationCommand(&nextConfig), &CommandReply{})
+		} else {
+			DPrintf("{Node %v}{Group %v} fetches old configuration %v when currentConfigNum is %v", kv.me, kv.gid, nextConfig, currentConfigNum)
 		}
 	}
 }
 
-func (kv *ShardKV) applyConfiguration(nextConfig *shardctrler.Config) *CommandReply{
-	if nextConfig.Num == kv.currentConfig.Num + 1 {
+func (kv *ShardKV) applyConfiguration(nextConfig *shardctrler.Config) *CommandReply {
+	if nextConfig.Num == kv.currentConfig.Num+1 {
+		DPrintf("{Node %v}{Group %v} updates currentConfig from %v to %v", kv.me, kv.gid, kv.currentConfig, nextConfig)
 		kv.updateShardStatus(nextConfig)
 		kv.lastConfig = kv.currentConfig
 		kv.currentConfig = *nextConfig
 		return &CommandReply{OK, ""}
 	}
+	DPrintf("{Node %v}{Group %v} rejects outdated config %v when currentConfig is %v", kv.me, kv.gid, nextConfig, kv.currentConfig)
 	return &CommandReply{ErrOutDated, ""}
 }
 
@@ -304,8 +360,9 @@ func (kv *ShardKV) migrationAction() {
 	gid2ShardIDS := kv.getShardIDsByStatus(Pulling)
 	var wg sync.WaitGroup
 	for gid, shardIDs := range gid2ShardIDS {
+		DPrintf("{Node %v}{Group %v} starts a PullTask to get shards %v from group %v when config is %v", kv.me, kv.gid, shardIDs, gid, kv.currentConfig)
 		wg.Add(1)
-		go func(servers[]string, configNum int, shardIDs []int) {
+		go func(servers []string, configNum int, shardIDs []int) {
 			defer wg.Done()
 			pullTaskRequest := ShardOperationArgs{configNum, shardIDs}
 			for _, server := range servers {
@@ -313,7 +370,7 @@ func (kv *ShardKV) migrationAction() {
 				srv := kv.make_end(server)
 				if srv.Call("ShardKV.GetShardsData", &pullTaskRequest, &pullTaskReply) && pullTaskReply.Err == OK {
 					kv.Execute(NewInsertShardsCommand(&pullTaskReply), &CommandReply{})
-				} 
+				}
 			}
 		}(kv.lastConfig.Groups[gid], kv.currentConfig.Num, shardIDs)
 	}
@@ -321,7 +378,6 @@ func (kv *ShardKV) migrationAction() {
 	wg.Wait()
 }
 
-// TODO: 逻辑不太对，需要 modify 一下
 func (kv *ShardKV) getShardIDsByStatus(status ShardStatus) map[int][]int {
 	g2s := make(map[int][]int)
 	for shardID, shard := range kv.stateMachine {
@@ -345,10 +401,11 @@ func (kv *ShardKV) GetShardsData(args *ShardOperationArgs, reply *ShardOperation
 	}
 	kv.mu.RLock()
 	defer kv.mu.RUnlock()
-	
+	defer DPrintf("{Node %v}{Group %v} processes PullTaskRequest %v with reply %v", kv.me, kv.gid, args, reply)
+
 	if kv.currentConfig.Num < args.ConfigNum {
 		reply.Err = ErrNotReady
-		return 
+		return
 	}
 
 	reply.Shards = make(map[int]map[string]string)
@@ -363,8 +420,9 @@ func (kv *ShardKV) GetShardsData(args *ShardOperationArgs, reply *ShardOperation
 	reply.ConfigNum, reply.Err = args.ConfigNum, OK
 }
 
-func (kv *ShardKV) applyInsertShards(shardsInfo *ShardOperationReply) *CommandReply{
+func (kv *ShardKV) applyInsertShards(shardsInfo *ShardOperationReply) *CommandReply {
 	if shardsInfo.ConfigNum == kv.currentConfig.Num {
+		DPrintf("{Node %v}{Group %v} accepts shards insertion %v when currentConfig is %v", kv.me, kv.gid, shardsInfo, kv.currentConfig)
 		for shardId, shardData := range shardsInfo.Shards {
 			shard := kv.stateMachine[shardId]
 			if shard.Status == Pulling {
@@ -373,7 +431,7 @@ func (kv *ShardKV) applyInsertShards(shardsInfo *ShardOperationReply) *CommandRe
 				}
 				shard.Status = GCing
 			} else {
-				break;
+				break
 			}
 		}
 		for clientId, opContext := range shardsInfo.LastOperation {
@@ -383,6 +441,7 @@ func (kv *ShardKV) applyInsertShards(shardsInfo *ShardOperationReply) *CommandRe
 		}
 		return &CommandReply{OK, ""}
 	}
+	DPrintf("{Node %v}{Group %v} rejects outdated shards insertion %v when currentConfig is %v", kv.me, kv.gid, shardsInfo, kv.currentConfig)
 	return &CommandReply{ErrOutDated, ""}
 }
 
@@ -391,8 +450,9 @@ func (kv *ShardKV) gcAction() {
 	gid2ShardIDS := kv.getShardIDsByStatus(GCing)
 	var wg sync.WaitGroup
 	for gid, shardIDs := range gid2ShardIDS {
+		DPrintf("{Node %v}{Group %v} starts a GCTask to delete shards %v in group %v when config is %v", kv.me, kv.gid, shardIDs, gid, kv.currentConfig)
 		wg.Add(1)
-		go func(servers[]string, configNum int, shardIDs []int) {
+		go func(servers []string, configNum int, shardIDs []int) {
 			defer wg.Done()
 			gcTaskRequest := ShardOperationArgs{configNum, shardIDs}
 			for _, server := range servers {
@@ -400,7 +460,7 @@ func (kv *ShardKV) gcAction() {
 				srv := kv.make_end(server)
 				if srv.Call("ShardKV.DeleteShardsData", &gcTaskRequest, &gcTaskReply) && gcTaskReply.Err == OK {
 					kv.Execute(NewDeleteShardsCommand(&gcTaskRequest), &CommandReply{})
-				} 
+				}
 			}
 		}(kv.lastConfig.Groups[gid], kv.currentConfig.Num, shardIDs)
 	}
@@ -414,8 +474,11 @@ func (kv *ShardKV) DeleteShardsData(args *ShardOperationArgs, reply *ShardOperat
 		return
 	}
 
+	defer DPrintf("{Node %v}{Group %v} processes GCTaskRequest %v with reply %v", kv.me, kv.gid, args, reply)
+
 	kv.mu.RLock()
 	if kv.currentConfig.Num > args.ConfigNum {
+		DPrintf("{Node %v}{Group %v}'s encounters duplicated shards deletion %v when currentConfig is %v", kv.me, kv.gid, args, kv.currentConfig)
 		reply.Err = OK
 		kv.mu.RUnlock()
 		return
@@ -427,8 +490,9 @@ func (kv *ShardKV) DeleteShardsData(args *ShardOperationArgs, reply *ShardOperat
 	reply.Err = commandReply.Err
 }
 
-func (kv *ShardKV) applyDeleteShards(shardsInfo *ShardOperationArgs) *CommandReply{
+func (kv *ShardKV) applyDeleteShards(shardsInfo *ShardOperationArgs) *CommandReply {
 	if shardsInfo.ConfigNum == kv.currentConfig.Num {
+		DPrintf("{Node %v}{Group %v}'s shards status are %v before accepting shards deletion %v when currentConfig is %v", kv.me, kv.gid, kv.getShardStatus(), shardsInfo, kv.currentConfig)
 		for _, shardId := range shardsInfo.ShardIDs {
 			shard := kv.stateMachine[shardId]
 			if shard.Status == GCing {
@@ -439,8 +503,10 @@ func (kv *ShardKV) applyDeleteShards(shardsInfo *ShardOperationArgs) *CommandRep
 				break
 			}
 		}
+		DPrintf("{Node %v}{Group %v}'s shards status are %v after accepting shards deletion %v when currentConfig is %v", kv.me, kv.gid, kv.getShardStatus(), shardsInfo, kv.currentConfig)
 		return &CommandReply{OK, ""}
 	}
+	DPrintf("{Node %v}{Group %v}'s encounters duplicated shards deletion %v when currentConfig is %v", kv.me, kv.gid, shardsInfo, kv.currentConfig)
 	return &CommandReply{OK, ""}
 }
 
@@ -450,10 +516,9 @@ func (kv *ShardKV) checkEntryInCurrentTermAction() {
 	}
 }
 
-func (kv *ShardKV) applyEmptyEntry() *CommandReply{
+func (kv *ShardKV) applyEmptyEntry() *CommandReply {
 	return &CommandReply{OK, ""}
 }
-
 
 //
 // the tester calls Kill() when a ShardKV instance won't
@@ -532,6 +597,8 @@ func StartServer(servers []*labrpc.ClientEnd, me int, persister *raft.Persister,
 	go kv.Monitor(kv.migrationAction, MigrationMonitorTimeout)
 	go kv.Monitor(kv.gcAction, GCMonitorTimeout)
 	go kv.Monitor(kv.checkEntryInCurrentTermAction, EmptyEntryMonitorTimeout)
+
+	DPrintf("{Node %v}{Group %v} has started", kv.me, kv.gid)
 	return kv
 }
 

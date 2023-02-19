@@ -1,11 +1,14 @@
 package shardkv
 
-import "fmt"
-import "6.824/shardctrler"
+import (
+	"fmt"
+
+	"6.824/shardctrler"
+)
 
 type Command struct {
-	Op		CommandType
-	Data	interface{}
+	Op   CommandType
+	Data interface{}
 }
 
 type CommandType uint8

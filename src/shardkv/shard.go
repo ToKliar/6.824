@@ -3,15 +3,29 @@ package shardkv
 type ShardStatus uint8
 
 const (
-	Serving	ShardStatus = iota
+	Serving ShardStatus = iota
 	Pulling
 	BePulling
 	GCing
 )
 
+func (ss *ShardStatus) String() string {
+	switch *ss {
+	case Serving:
+		return "serving"
+	case Pulling:
+		return "pulling"
+	case BePulling:
+		return "be pulling"
+	case GCing:
+		return "gcing"
+	}
+	return "err status"
+}
+
 type Shard struct {
-	KV 		map[string]string
-	Status	ShardStatus 
+	KV     map[string]string
+	Status ShardStatus
 }
 
 func NewShard() *Shard {

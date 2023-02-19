@@ -1,33 +1,33 @@
 package shardctrler
 
+import (
+	"bytes"
+	"fmt"
+	"sync"
+	"sync/atomic"
+	"time"
 
-import "6.824/raft"
-import "6.824/labrpc"
-import "sync"
-import "6.824/labgob"
-import "sync/atomic"
-import "time"
-import "bytes"
-import "fmt"
-
+	"6.824/labgob"
+	"6.824/labrpc"
+	"6.824/raft"
+)
 
 type ShardCtrler struct {
 	mu      sync.RWMutex
 	me      int
 	rf      *raft.Raft
 	applyCh chan raft.ApplyMsg
-	dead	int32
+	dead    int32
 
-	lastApplied		int
-	notifyChans		map[int]chan *CommandReply
-	lastOperation	map[int64]OpContext
-	configStateMachine	MemoryConfig
-	
+	lastApplied        int
+	notifyChans        map[int]chan *CommandReply
+	lastOperation      map[int64]OpContext
+	configStateMachine MemoryConfig
 }
 
 type OpContext struct {
-	PrevCommandId 	int
-	Result			*CommandReply
+	PrevCommandId int
+	Result        *CommandReply
 }
 
 func (sc *ShardCtrler) isDuplicateCommand(clientId int64, commandId int) bool {
@@ -51,9 +51,9 @@ func (sc *ShardCtrler) Command(args *CommandArgs, reply *CommandReply) {
 	index, _, isLeader := sc.rf.Start(*args)
 	if !isLeader {
 		reply.WrongLeader = true
-		return 
+		return
 	}
-	
+
 	sc.mu.Lock()
 	ch, ok := sc.notifyChans[index]
 	if !ok {
@@ -101,7 +101,7 @@ func (sc *ShardCtrler) restoreSnapshot(snapshot []byte) {
 		sc.lastApplied = lastApplied
 		sc.lastOperation = lastOperation
 		sc.configStateMachine = MemoryConfig{configs}
-	} 
+	}
 }
 
 func (sc *ShardCtrler) applier() {
@@ -121,12 +121,12 @@ func (sc *ShardCtrler) applier() {
 				if command.Op != OpQuery && sc.isDuplicateCommand(command.ClientId, command.CommandId) {
 					reply = sc.lastOperation[command.ClientId].Result
 				} else {
-					reply = sc.applyLogToStateMachine(command) 
+					reply = sc.applyLogToStateMachine(command)
 					if command.Op != OpQuery {
-						sc.lastOperation[command.ClientId] = OpContext { command.CommandId, reply}
+						sc.lastOperation[command.ClientId] = OpContext{command.CommandId, reply}
 					}
 				}
-				
+
 				currentTerm, isLeader := sc.rf.GetState()
 				if isLeader && message.CommandTerm == currentTerm {
 					ch, ok := sc.notifyChans[message.CommandIndex]
@@ -136,11 +136,6 @@ func (sc *ShardCtrler) applier() {
 					}
 					ch <- reply
 				}
-
-				// needSnapshot := sc.needSnapshot()
-				// if needSnapshot {
-				// 	sc.takeSnapshot(message.CommandIndex)
-				// }
 				sc.mu.Unlock()
 			} else if message.SnapshotValid {
 				sc.mu.Lock()
@@ -156,9 +151,9 @@ func (sc *ShardCtrler) applier() {
 	}
 }
 
-func (sc *ShardCtrler) applyLogToStateMachine(command CommandArgs) *CommandReply{
+func (sc *ShardCtrler) applyLogToStateMachine(command CommandArgs) *CommandReply {
 	reply := new(CommandReply)
-	switch (command.Op) {
+	switch command.Op {
 	case OpQuery:
 		reply.Config, reply.Err = sc.configStateMachine.Query(command.Num)
 	case OpJoin:
@@ -172,7 +167,6 @@ func (sc *ShardCtrler) applyLogToStateMachine(command CommandArgs) *CommandReply
 	}
 	return reply
 }
-
 
 //
 // the tester calls Kill() when a ShardCtrler instance won't

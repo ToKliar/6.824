@@ -44,24 +44,25 @@ const (
 type Err string
 
 type CommandArgs struct {
-	Servers		map[int][]string
-	GIDs		[]int
-	Shard		int
-	GID			int
-	Num			int
-	Op			Operation
-	ClientId	int64
-	CommandId	int
+	Servers   map[int][]string
+	GIDs      []int
+	Shard     int
+	GID       int
+	Num       int
+	Op        Operation
+	ClientId  int64
+	CommandId int
 }
 
 type CommandReply struct {
 	WrongLeader bool
-	Err			Err
-	Config		Config
+	Err         Err
+	Config      Config
 }
 
 func DefaultConfig() Config {
-	config := Config {}
+	config := Config{}
 	config.Groups = make(map[int][]string)
+	config.Num = 0
 	return config
 }
