@@ -122,12 +122,7 @@ func (rf *Raft) appendNewEntry(command interface{}) Entry {
 func (rf *Raft) HasLogInCurrentTerm() bool {
 	rf.mu.RLock()
 	defer rf.mu.RUnlock()
-	for index := len(rf.log) - 1; index >= 0; index-- {
-		if rf.log[index].Term <= rf.currentTerm {
-			return rf.log[index].Term == rf.currentTerm
-		}
-	}
-	return false
+	return rf.getLastLog().Term == rf.currentTerm
 }
 
 // 对新的定义

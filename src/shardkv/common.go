@@ -11,10 +11,10 @@ import "time"
 // You will have to modify these definitions.
 //
 
-const ConfigureMonitorTimeout = 50 * time.Millisecond
-const MigrationMonitorTimeout = 160 * time.Millisecond
-const GCMonitorTimeout = 200 * time.Millisecond
-const EmptyEntryMonitorTimeout = 50 * time.Millisecond
+const ConfigureMonitorTimeout = 100 * time.Millisecond
+const MigrationMonitorTimeout = 100 * time.Millisecond
+const GCMonitorTimeout = 100 * time.Millisecond
+const EmptyEntryMonitorTimeout = 500 * time.Millisecond
 
 const (
 	OK             = "OK"

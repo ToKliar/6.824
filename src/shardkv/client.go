@@ -70,22 +70,18 @@ func MakeClerk(ctrlers []*labrpc.ClientEnd, make_end func(string) *labrpc.Client
 
 func (ck *Clerk) Command(args *CommandArgs) string {
 	args.ClientId, args.CommandId = ck.clientId, ck.commandId
-	DPrintf("{Clerk %v} Send Command %v", ck.clientId, args)
 	for {
 		shard := key2shard(args.Key)
 		gid := ck.config.Shards[shard]
-		DPrintf("{Clerk %v} Current Config:%v Shard:%d Gid:%d", ck.clientId, ck.config, shard, gid)
 		if servers, ok := ck.config.Groups[gid]; ok {
 			if _, ok = ck.leaderIds[gid]; !ok {
 				ck.leaderIds[gid] = 0
 			}
 			oldLeaderId := ck.leaderIds[gid]
 			newLeaderId := oldLeaderId
-			DPrintf("{Clerk %v} Leader: %d", ck.clientId, newLeaderId)
 			for {
 				var reply CommandReply
 				ok := ck.make_end(servers[newLeaderId]).Call("ShardKV.Command", args, &reply)
-				DPrintf("{Clerk %v} Send Command %v To Node %d Group %d With reply %v", ck.clientId, args, newLeaderId, gid, reply)
 				if ok && (reply.Err == OK || reply.Err == ErrNoKey) {
 					ck.commandId++
 					ck.leaderIds[gid] = newLeaderId
@@ -94,7 +90,6 @@ func (ck *Clerk) Command(args *CommandArgs) string {
 					break
 				} else {
 					newLeaderId = (newLeaderId + 1) % len(servers)
-					DPrintf("{Clerk %v} New Leader: %d Old Leader: %d", ck.clientId, newLeaderId, oldLeaderId)
 					if newLeaderId == oldLeaderId {
 						break
 					}
